@@ -1,6 +1,6 @@
 {
   "name": "checkpoint-studio",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "private": true,
   "description": "Local screen recorder with non-destructive retakes",
   "main": "electron/main.cjs",

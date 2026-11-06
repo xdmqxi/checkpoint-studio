@@ -55,11 +55,17 @@ page.setDefaultTimeout(10000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 async function fits(width, height, label) {
-  await app.evaluate(
-    ({ BrowserWindow }, size) =>
-      BrowserWindow.getAllWindows()[0].setContentSize(...size),
-    [width, height],
-  );
+  if (process.env.CI) {
+    // Hosted Mac displays may be physically smaller than the requested window.
+    // Exercise the exact CSS viewport sizes independently of the host display.
+    await page.setViewportSize({ width, height });
+  } else {
+    await app.evaluate(
+      ({ BrowserWindow }, size) =>
+        BrowserWindow.getAllWindows()[0].setContentSize(...size),
+      [width, height],
+    );
+  }
   await page.waitForFunction(
     (size) => innerWidth === size[0] && innerHeight === size[1],
     [width, height],

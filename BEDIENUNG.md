@@ -1,4 +1,4 @@
-# Checkpoint Studio 0.6.1 – Schnittplatz
+# Checkpoint Studio 0.6.2 – Schnittplatz
 
 Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destruktiv: Clips verweisen auf Ausschnitte aus Originaldateien. Löschen eines Timeline-Clips entfernt keine Originaldatei.
 

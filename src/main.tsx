@@ -589,7 +589,7 @@ function App() {
           <div className="local">
             <span className="green" /> Lokal. Privat. Dein Projekt.
           </div>
-          <small>Checkpoint Studio · 0.6.1</small>
+          <small>Checkpoint Studio · 0.6.2</small>
         </div>
       </aside>
       <main>
