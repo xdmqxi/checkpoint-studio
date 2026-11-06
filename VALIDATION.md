@@ -1,5 +1,15 @@
 # Prüfprotokoll – Checkpoint Studio
 
+## Version 0.6.3 – feste Spurhöhen, dynamische Audioquellen und Windows-Upgrade
+
+- Nur der Timeline-Spurbereich scrollt vertikal; das übrige Editorfenster und die Werkzeugleisten bleiben fest. V1 ist immer 52 px hoch, Audiozeilen immer 40 px, unabhängig von der Zahl der Audioquellen. Leere Reserve-Audiozeilen gibt es nicht.
+- Zeilen für Mikrofon und PC-/Videoton werden nur bei vorhandener Quelle angezeigt. Jede importierte Audio-Referenz hat eine eigene Zeile; Entfernen entfernt die Zeile. Originaldateien bleiben erhalten. Entfernte Mikrofon-/PC-Quellen sind aus Vorschau und Export ausgenommen und können im Mixer wieder hinzugefügt werden.
+- Layouttest gegen Quell-App und gepackte Mac-App bei 1050×740, 1200×800 und 1440×900: keine vertikale Seitenscrollfläche; feste Spurhöhen; Scrollbewegung nur in der Timeline; Hinzufügen/Entfernen und Wiederherstellen von Audioquellen. Auf CI werden dieselben CSS-Viewportgrößen unabhängig von der begrenzten Host-Bildschirmauflösung geprüft.
+- [Release-CI](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42214479288) erfolgreich auf Mac und Windows: 26 Tests, bestehender Editor-Smoke, Studio-E2E, neuer Layouttest, Paketierung und Veröffentlichung.
+- Echter Windows-Upgrade-Test: Version 0.6.0 installiert; neuer Wizard erkennt und zeigt sie; Installation nach 0.6.3 in einem anderen Zielordner durchgeführt; alte EXE entfernt, neue EXE hat korrekte Version; Einstellungen und externer Projektordner unverändert; genau ein Windows-App-Eintrag mit stabilem Namen und aktueller Versionsnummer. App-ID/GUID bleiben unverändert; der Standard-NSIS-Upgradepfad wird verwendet.
+- [Release v0.6.3](https://github.com/xdmqxi/checkpoint-studio/releases/tag/v0.6.3) öffentlich. Beide stabilen Installer-Links ohne Anmeldung geprüft; veröffentlichte SHA-256-Dateien stimmen mit den GitHub-Asset-Digests überein.
+
+
 ## Version 0.6.0 – Schnittarbeitsplatz (6. November 2026)
 
 GitHub-Veröffentlichung abgeschlossen: [Release v0.6.0](https://github.com/xdmqxi/checkpoint-studio/releases/tag/v0.6.0). [Release-Workflow](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42205759605) mit Mac-/Windows-Builds und Veröffentlichung sowie [Windows-CI](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42205756210) erfolgreich. Native Windows-Editor-/Audio-/Exporttests sind damit ausgeführt; echte Windows-Bildschirmaufnahme bleibt gesondert offen. Anonyme Downloads beider stabiler Installer-Links geprüft; die veröffentlichten SHA-256-Dateien stimmen mit den Asset-Digests aus GitHub überein.

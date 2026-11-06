@@ -1,4 +1,4 @@
-# Windows-Prüfstand – 0.6.0
+# Windows-Prüfstand – 0.6.3
 
 ## Bereits geprüft, auf macOS
 
@@ -7,6 +7,10 @@
 - Zielplattformabhängiges FFmpeg: `win32/x64`, FFmpeg b6.1.1. Die Mac-Datei wird nicht als Windows-Encoder verwendet.
 - PE-Headerprüfung für App und FFmpeg. Der Prüfhelfer kann den tatsächlichen NSIS-Nutzinhalt extrahieren und dessen FFmpeg-Hash gegen das Build-Manifest prüfen.
 - Nicht-destruktive Timeline, Live-Retakes, Projektformat und echter Video-/Audioexport automatisiert auf macOS geprüft. Exporttest verwendet einen Projektpfad mit Leerzeichen, Umlaut und Apostroph.
+
+## Upgrade-Abnahme 0.6.3
+
+Der [Release-Test](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42214479288) installiert 0.6.0, bedient den neuen Wizard und führt das Update nach 0.6.3 aus. Bestätigt: Vorgänger erkannt, alte EXE entfernt, neue EXE korrekt, externe Projektdatei und App-Einstellungen unverändert, genau ein App-Eintrag mit stabilem Namen. Die allgemeine Aufnahme-/Hardware-Abnahme unten bleibt davon getrennt.
 
 ## Native Windows-Tests auf GitHub Actions
 
