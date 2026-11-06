@@ -1,0 +1,124 @@
+{
+  "name": "checkpoint-studio",
+  "version": "0.6.0",
+  "private": true,
+  "description": "Local screen recorder with non-destructive retakes",
+  "main": "electron/main.cjs",
+  "author": "Checkpoint Studio",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "start": "npm run build && electron .",
+    "build": "tsc && vite build",
+    "test": "node --test tests/*.test.mjs",
+    "dist:mac": "npm run build && electron-builder --mac dmg --arm64",
+    "dist:win": "npm run build && electron-builder --win nsis --x64",
+    "test:ui": "node tests/ui-smoke.mjs",
+    "test:recording": "node tests/recording-smoke.mjs",
+    "test:live": "node tests/live-controls-smoke.mjs",
+    "test:editor": "node tests/editor-checkpoints-smoke.mjs",
+    "pack:mac": "npm run build && electron-builder --mac dir --arm64",
+    "brand": "node scripts/create-brand.cjs",
+    "test:studio": "node tests/studio-editor-smoke.mjs"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.0.0",
+    "playwright": "^1.64.1",
+    "prettier": "^3.9.10",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  },
+  "build": {
+    "appId": "studio.checkpoint.desktop",
+    "productName": "Checkpoint Studio",
+    "files": [
+      "dist/**",
+      "electron/**",
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY.md",
+      "!node_modules/ffmpeg-static/ffmpeg",
+      "!node_modules/ffmpeg-static/ffmpeg.exe"
+    ],
+    "mac": {
+      "category": "public.app-category.video",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Record your voice in tutorial videos.",
+        "NSScreenCaptureUsageDescription": "Record the screen selected by you."
+      },
+      "icon": "build/icon.icns",
+      "artifactName": "Checkpoint-Studio-${version}-macOS-${arch}.${ext}"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico",
+      "artifactName": "Checkpoint-Studio-${version}-Windows-${arch}-Setup.${ext}",
+      "signExecutable": false
+    },
+    "directories": {
+      "output": "release"
+    },
+    "beforePack": "./scripts/before-pack.cjs",
+    "extraResources": [
+      {
+        "from": "vendor/ffmpeg/${os}-${arch}",
+        "to": "ffmpeg"
+      },
+      {
+        "from": "THIRD_PARTY.md",
+        "to": "licenses/THIRD_PARTY.md"
+      },
+      {
+        "from": "LICENSE",
+        "to": "licenses/Checkpoint-Studio-LICENSE.txt"
+      },
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    },
+    "dmg": {
+      "background": "build/dmg-background.png",
+      "icon": "build/icon.icns",
+      "iconSize": 100,
+      "iconTextSize": 12,
+      "window": {
+        "width": 640,
+        "height": 420
+      },
+      "contents": [
+        {
+          "x": 170,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 470,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

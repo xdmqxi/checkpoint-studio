@@ -1,0 +1,383 @@
+html[data-floating],
+html[data-floating] body,
+html[data-floating] #root {
+  background: transparent !important;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #eef1e9;
+  color-scheme: dark;
+}
+.recording-pill {
+  width: max-content;
+  height: 70px;
+  margin: 9px 8px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid #d4e5cf24;
+  border-radius: 25px;
+  background: linear-gradient(
+    155deg,
+    #2a302dfb 0%,
+    #1b201efc 50%,
+    #151a18fc 100%
+  );
+  padding: 8px 10px;
+  box-shadow:
+    0 5px 10px #0006,
+    inset 0 1px 0 #ffffff0b;
+  user-select: none;
+  color: #edf1e9;
+  white-space: nowrap;
+}
+.pill-grip {
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 46px;
+  color: #9ba99666;
+  cursor: grab;
+  flex-shrink: 0;
+}
+.pill-grip:hover {
+  color: #c9d9bd;
+}
+.pill-clock {
+  width: 88px;
+  position: relative;
+  padding-left: 17px;
+  line-height: 1.1;
+  flex-shrink: 0;
+  -webkit-app-region: drag;
+}
+.pill-clock strong {
+  font-size: 21px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+  font-weight: 550;
+  color: #f5f7f1;
+}
+.pill-clock small {
+  display: block;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #9da89a;
+  margin-top: 6px;
+}
+.record-led,
+.paused-led {
+  position: absolute;
+  left: 1px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fa8b7e;
+  box-shadow: 0 0 0 4px #f48a7c10;
+  animation: record-breathe 2.4s ease-in-out infinite;
+}
+.paused-led {
+  background: #e8c57c;
+  box-shadow: 0 0 0 4px #e8c57c14;
+  animation: none;
+}
+.is-paused .pill-clock small {
+  color: #e0c18b;
+}
+.pill-divider {
+  height: 27px;
+  width: 1px;
+  background: linear-gradient(transparent, #d4e5cf25, transparent);
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+.recording-pill button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #c8d2c2;
+  border-radius: 12px;
+  padding: 0;
+  width: 40px;
+  height: 46px;
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+.recording-pill button:hover {
+  background: #ffffff09;
+  border-color: #ffffff10;
+  color: #fff;
+}
+.recording-pill button:active {
+  transform: scale(0.96);
+}
+.recording-pill button:focus-visible {
+  outline: 2px solid #c5e6a1;
+  outline-offset: 2px;
+}
+.recording-pill button:disabled {
+  opacity: 0.28;
+}
+.recording-pill .pill-tool {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.pill-tool small {
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.8;
+}
+.recording-pill .pill-checkpoint {
+  border-radius: 14px;
+  padding: 6px 9px;
+  background: linear-gradient(120deg, #d0eab1, #b8d995);
+  width: 156px;
+  justify-content: flex-start;
+  color: #25351b;
+  gap: 8px;
+  box-shadow:
+    0 2px 8px #0002,
+    inset 0 1px 0 #ffffff50;
+  border-color: #c9e5a7;
+  height: 48px;
+  margin: 0 3px;
+}
+.recording-pill .pill-checkpoint:hover {
+  background: linear-gradient(120deg, #e0f5c6, #c8e6a9);
+  color: #1c2d11;
+  border-color: #e7fad5;
+}
+.pill-flag-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 29px;
+  height: 31px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #2f4c2010;
+}
+.pill-checkpoint-copy {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 650;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.15;
+}
+.pill-checkpoint-copy small {
+  display: block;
+  font-size: 8px;
+  font-weight: 450;
+  max-width: 96px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 4px;
+  color: #425b31;
+}
+.pill-checkpoint .pill-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 18px;
+  height: 19px;
+  padding: 0 3px;
+  border-radius: 5px;
+  background: #38502513;
+  font-size: 9px;
+  font-weight: 650;
+  animation: checkpoint-saved 0.3s ease-out;
+}
+.recording-pill .pill-text-active {
+  background: #c4e2a417;
+  color: #d0ecb2;
+  border-color: #bfdc9d3b;
+}
+.recording-pill .pill-stop {
+  background: #ec897911;
+  color: #f0ad9f;
+  border-color: #ec89791b;
+  width: 42px;
+}
+.recording-pill .pill-stop:hover {
+  background: #ec897925;
+  color: #ffd1c6;
+  border-color: #ec897944;
+}
+.recording-pill .pill-main {
+  color: #8b9984;
+  width: 26px;
+  height: 34px;
+  border-radius: 9px;
+}
+@keyframes record-breathe {
+  50% {
+    box-shadow: 0 0 0 4px #f48a7c24;
+    opacity: 0.65;
+  }
+}
+@keyframes checkpoint-saved {
+  from {
+    transform: scale(0.75);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .recording-pill * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.live-text-window {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #617154;
+  border-radius: 13px;
+  overflow: hidden;
+}
+.text-window-top {
+  height: 49px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: #121810e6;
+  -webkit-app-region: drag;
+}
+.text-window-top > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #bbcea8;
+}
+.text-window-top i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f08479;
+  margin-left: 12px;
+}
+.text-window-top button {
+  -webkit-app-region: no-drag;
+  background: transparent;
+  border: 0;
+  padding: 6px;
+  color: #b8c8ab;
+}
+.live-text-window textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  resize: none;
+  background: transparent;
+  border: 0;
+  outline: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.45;
+  padding: 4.375vw;
+  overflow: auto;
+  border-radius: 0;
+}
+.live-text-window textarea::placeholder {
+  color: #b4c5a65c;
+}
+.text-window-tools {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: #121810ed;
+  flex-shrink: 0;
+  border-top: 1px solid #ffffff16;
+  color: #bbc7b1;
+  font-size: 11px;
+}
+.text-window-tools label {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
+  font-size: 11px;
+  margin: 0;
+}
+.text-window-tools select {
+  padding: 6px;
+  font-size: 12px;
+  background: #25301f;
+  max-width: 65px;
+}
+.text-window-tools button {
+  padding: 7px;
+  background: transparent;
+  border-color: #46503d;
+  color: #bdcbb3;
+}
+.text-window-tools button.chosen {
+  background: #bfdc9d;
+  color: #17230e;
+}
+.text-window-tools input[type="color"] {
+  width: 30px;
+  height: 28px;
+  padding: 2px;
+  background: transparent;
+  border: 1px solid #46503d;
+  cursor: pointer;
+}
+.text-tools-note {
+  margin-left: auto;
+  font-size: 10px;
+  color: #839576;
+}
+@media (max-width: 850px) {
+  .text-tools-note {
+    display: none;
+  }
+}
+
+/* Compact blue shell matching the SAP workflow workspace. */
+.recording-pill { background: linear-gradient(145deg, #354a5f, #1d2d3e); border-color: #6b8aa666; box-shadow: 0 5px 14px #0c223d40, inset 0 1px #ffffff14; color: #fff; }
+.pill-grip, .recording-pill .pill-main { color: #a9bed2; }
+.pill-grip:hover { color: #fff; }
+.pill-clock strong { color: #fff; }
+.pill-clock small { color: #b8cddd; }
+.pill-divider { background: linear-gradient(transparent, #b8cddd55, transparent); }
+.recording-pill button { color: #e1edfa; }
+.recording-pill button:focus-visible { outline-color: #89d1ff; }
+.recording-pill .pill-checkpoint { background: #0070f2; color: #fff; border-color: #4db1ff; }
+.recording-pill .pill-checkpoint:hover { background: #0057d2; color: #fff; border-color: #89d1ff; }
+.pill-flag-icon, .pill-checkpoint .pill-count { background: #ffffff20; }
+.pill-checkpoint-copy small { color: #e0f0ff; }
+.recording-pill .pill-text-active { color: #bde3ff; background: #0070f240; border-color: #4db1ff88; }
+.live-text-window { border-color: #5c7b99; }
+.text-window-top, .text-window-tools { background: #1d2d3ef5; }
+.text-window-top > span, .text-window-top button, .text-window-tools { color: #dbeafa; }
+.text-window-tools select { background: #354a5f; color: #fff; }
+.text-window-tools button { color: #dbeafa; border-color: #5c7b99; }
+.text-window-tools button.chosen { background: #0070f2; color: #fff; }
+.text-tools-note { color: #b8cddd; }

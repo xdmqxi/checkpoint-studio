@@ -1,0 +1,31 @@
+name: Windows build and media tests
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:ui
+      - run: npm run test:editor
+      - run: npm run test:studio
+      - run: npm run dist:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Checkpoint-Studio-Windows-x64
+          path: release/*Windows*x64*Setup.exe
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Windows-test-screenshots
+          path: test-results/

@@ -1,0 +1,23 @@
+node_modules/
+dist/
+release/
+test-results/
+.DS_Store
+
+vendor/
+
+# Private projects, local configuration and credentials
+*.checkpoint
+*.checkpoint-project/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.mobileprovision
+*.log
+coverage/
+.codex/
+release-upload/

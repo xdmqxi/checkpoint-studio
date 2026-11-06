@@ -1,0 +1,39 @@
+# Checkpoint Studio 0.6 – Schnittplatz
+
+Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destruktiv: Clips verweisen auf Ausschnitte aus Originaldateien. Löschen eines Timeline-Clips entfernt keine Originaldatei.
+
+## Medien und Vorschau
+
+- **Video importieren** übernimmt MP4, MOV, WEBM, MKV, AVI und M4V. Die App behält die Originaldatei und erzeugt eine MP4-Arbeitskopie mit kompatiblem Video und Ton.
+- **Audio importieren** übernimmt WAV, MP3, M4A, FLAC, OGG, AAC, AIFF/AIF, WMA und OPUS. Die App behält das Original und erstellt eine WAV-Arbeitskopie. Ein beschädigtes oder nicht decodierbares Medium führt zu einer Fehlermeldung.
+- Importiertes Video wird hinten an V1 angehängt. Importiertes Audio wird am Abspielkopf auf einer freien Audiospur eingefügt. Projektmedien lassen sich durchsuchen. Audio kann dort separat vorgehört und erneut eingefügt werden.
+- **Leertaste** oder der Wiedergabeknopf spielt die gesamte Videosequenz ab, über Schnitte und verschiedene Takes hinweg. Die Musik läuft zur Sequenzzeit synchron. Anfang/Ende springen an die Grenzen der Videosequenz. ←/→ geht einen Frame bei 30 fps weiter; mit Umschalt einen Sekunden-Schritt.
+
+## Video schneiden
+
+1. In der Timeline auf einen Video-Clip klicken.
+2. Die Clipkanten ziehen oder unten **Start/Ende (Sekunden)** ändern. Weggekürzte Stellen lassen sich bis zu den ursprünglichen Quellgrenzen wieder aufziehen.
+3. **Teilen** schneidet am Abspielkopf. Alternativ **C** drücken und mit der Rasierklinge direkt in den Clip klicken. **V** aktiviert wieder das Auswahlwerkzeug.
+4. Video-Clips zum Umordnen auf andere Clips ziehen. Ein Take aus den Projektmedien kann auch erneut auf V1 gezogen werden.
+5. **Duplizieren** fügt eine Kopie hinter dem Clip ein. **Löschen & nachrücken** schließt die entstandene Videolücke. Musikclips behalten beim Videoschnitt ihre absolute Sequenzposition.
+6. Im Eigenschaftenbereich kann der Ton eines Video-Clips leiser gestellt oder stummgeschaltet werden. Der Aufnahmemixer regelt Mikrofon und System-/Videoton für alle Clips.
+
+## Musik und Sprache bearbeiten
+
+- A1 zeigt den zur Videoquelle gehörenden Aufnahmeton. A2–A4 sind drei unabhängige Audiospuren für importierte Musik, Sprache und weitere Töne. Überlappende Audioclips werden zusammen gemischt.
+- Die Wellenform wird aus echten Audiosamples berechnet. Den Körper eines Audio-Clips horizontal verschieben; vertikales Ziehen wechselt die Spur. Die Kanten kürzen den Quellausschnitt.
+- Mit eingeschaltetem **Einrasten (S)** rasten verschobene Audioclips an Videoschnitten, Checkpoints und dem Abspielkopf ein. **Alt** beim Ziehen umgeht es vorübergehend.
+- Nach Auswahl eines Audio-Clips zeigt der Eigenschaftenbereich Position, Quell-Start/-Ende, Lautstärke, Einblenden, Ausblenden und Spur. Fades werden in Sekunden eingestellt und in Vorschau sowie Export angewendet.
+- **Teilen**, **Duplizieren** und **Audio entfernen** wirken auf den ausgewählten Audio-Clip. Die Rasierklinge funktioniert auch hier. Entfernte Audio-Clips bleiben als Original in den Projektmedien verfügbar.
+- **Stummschalten** nimmt den jeweiligen Audio-Clip aus Vorschau und Export.
+
+## Checkpoints, Speichern und Export
+
+- **M** oder **Checkpoint** setzt eine Markierung am Abspielkopf. Markierungen lassen sich benennen, anspringen und entfernen. Sie bleiben an ihren Video-Quellstellen verankert, wenn Videoclips umgeordnet oder gekürzt werden.
+- Änderungen werden automatisch im geöffneten Projektordner gespeichert. Für einen anderen Rechner den ganzen Projektordner einschließlich `media/` kopieren.
+- **⌘/Strg+Z**: Rückgängig; **⌘/Strg+Umschalt+Z** bzw. **⌘/Strg+Y**: Wiederholen; **⌘/Strg+D**: Duplizieren; **⌘/Strg+K**: Teilen; **Entf/Backspace**: ausgewählten Clip entfernen.
+- **MP4 exportieren** öffnet Einstellungen für 720p/1080p, 30/60 fps und Standard/hohe Qualität. Die Ausgabe enthält die gesamte Videosequenz mit allen aktiven Audiospuren und Fades. Der Export zeigt den Fortschritt an. Audioclips nach dem Videoende werden abgeschnitten; sie verlängern die Videosequenz nicht.
+
+## Umfang
+
+Ein Schnittplatz im Stil professioneller Videoeditoren mit eigenem dunklem SAP-Workflow-Design. Enthalten sind eine Videospur und vier Audiobereiche, keine übereinanderliegenden Videospuren, Videoübergänge, Farbkorrektur, Untertitel- oder KI-Funktionen. Die Aufnahme enthält Bildschirm und optional Mikrofon; Systemton-Aufnahme bleibt in dieser Version deaktiviert. Importierter Videoton wird unterstützt. Eine Windows-x64-Version wird gebaut; eine tatsächliche Windows-Laufzeitprüfung muss auf einem Windows-PC erfolgen.
