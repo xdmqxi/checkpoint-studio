@@ -97,7 +97,8 @@
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
-      "include": "build/installer.nsh"
+      "include": "build/installer.nsh",
+      "uninstallDisplayName": "Checkpoint Studio"
     },
     "dmg": {
       "background": "build/dmg-background.png",

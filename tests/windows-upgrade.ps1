@@ -78,7 +78,8 @@ foreach($file in $settings){if((Get-Content $file -Raw).Trim() -ne 'preserve-set
 if((Get-Content $project -Raw).Trim() -ne $projectContent){throw 'External project was modified'}
 # The same application identity must have one uninstall registration after upgrade.
 $roots=@('HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall','HKCU:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall')
-$entries=@($roots | Where-Object {Test-Path $_} | ForEach-Object {Get-ChildItem $_} | Get-ItemProperty | Where-Object {$_.DisplayName -eq 'Checkpoint Studio'})
+$entries=@($roots | Where-Object {Test-Path $_} | ForEach-Object {Get-ChildItem $_} | Get-ItemProperty | Where-Object {$_.DisplayName -like 'Checkpoint Studio*'})
 if($entries.Count -ne 1){throw "Expected one installed application entry, found $($entries.Count)"}
+if($entries[0].DisplayName -ne 'Checkpoint Studio'){throw 'Installed-app name must remain stable across versions'}
 if($entries[0].DisplayVersion -ne $version){throw 'Uninstall entry has wrong version'}
 Write-Output "PASS: upgrade 0.6.0 -> $version replaces old program folder, preserves settings and project, leaves one installed-app entry"
