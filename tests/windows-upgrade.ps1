@@ -12,6 +12,9 @@ public static class UpgradeWizard {
  [DllImport("user32.dll")] public static extern IntPtr GetDlgItem(IntPtr h, int id);
  [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h, uint msg, IntPtr w, IntPtr l);
  [DllImport("user32.dll")] public static extern bool IsWindowEnabled(IntPtr h);
+ [DllImport("user32.dll")] public static extern bool EnumWindows(EnumProc cb,IntPtr p);
+ [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
+ public static string VisibleWindows(){var s=new StringBuilder();EnumWindows((h,p)=>{if(IsWindowVisible(h)){var b=new StringBuilder(512);GetWindowText(h,b,512);s.AppendLine("WINDOW: "+b.ToString());s.AppendLine(Text(h));}return true;},IntPtr.Zero);return s.ToString();}
  public static string Text(IntPtr root) {
   var text=new StringBuilder();
   EnumChildWindows(root,(h,p)=>{var b=new StringBuilder(2048);GetWindowText(h,b,2048);text.AppendLine(b.ToString());return true;},IntPtr.Zero);
@@ -56,11 +59,12 @@ Write-Output 'PASS: real NSIS wizard detects and explains replacement of version
 # Continue through Install and Finish, then close only the disposable test app.
 for ($i=0; $i -lt 120; $i++) {
  $wizard.Refresh();if($wizard.HasExited){break}
+ if($i % 10 -eq 0){Write-Output "Upgrade progress: $([UpgradeWizard]::VisibleWindows())"}
  $next=[UpgradeWizard]::GetDlgItem($wizard.MainWindowHandle,1)
  if($next -ne [IntPtr]::Zero -and [UpgradeWizard]::IsWindowEnabled($next)){[UpgradeWizard]::Click($wizard.MainWindowHandle,1)}
  Start-Sleep -Milliseconds 1000
 }
-$wizard.Refresh();if(-not $wizard.HasExited){throw 'Upgrade wizard did not finish'}
+$wizard.Refresh();if(-not $wizard.HasExited){throw "Upgrade wizard did not finish. $([UpgradeWizard]::VisibleWindows())"}
 if($wizard.ExitCode -ne 0){throw "Upgrade failed: $($wizard.ExitCode)"}
 # Stop only a test-app process launched from our disposable installation directory.
 Get-Process 'Checkpoint Studio' -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$newDir*" } | Stop-Process -Force
