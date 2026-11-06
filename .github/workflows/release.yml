@@ -2,10 +2,18 @@ name: Build and publish release
 on:
   push:
     tags: ['v[0-9]*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag, e.g. v0.6.0'
+        required: true
+        type: string
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 permissions:
   contents: read
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 jobs:
   build:
@@ -24,6 +32,8 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -34,7 +44,7 @@ jobs:
       - run: npm run build
       - run: npm run test:editor
       - run: npm run test:studio
-      - run: npm run ${{ matrix.build }}
+      - run: npm run ${{ matrix.build }} -- --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - run: node scripts/prepare-release.cjs ${{ matrix.target }}
@@ -55,6 +65,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
       - uses: actions/download-artifact@v4
         with:
           pattern: release-*
@@ -63,7 +75,7 @@ jobs:
       - name: Publish installers
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           node scripts/validate-release.cjs
           if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
