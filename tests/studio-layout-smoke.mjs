@@ -124,13 +124,14 @@ async function fits(width, height, label) {
     layout.tools.right <= layout.width + 1,
     `${label}: tool row must fit horizontally`,
   );
-  for (const row of layout.audioRows) {
-    assert.ok(
-      row.bottom <= layout.tracks.bottom + 1,
-      `Audio row clipped: ${JSON.stringify(layout)}`,
-    );
-    assert.ok(row.height >= 20);
-  }
+  assert.equal(
+    layout.last.height,
+    52,
+    "Video row must not stretch with missing or additional audio",
+  );
+  for (const row of layout.audioRows)
+    assert.equal(row.height, 40, "Audio row height stays fixed");
+
   console.log(
     "Fits",
     label,
@@ -202,6 +203,28 @@ try {
     [1050, 740],
   ])
     await fits(...size, "populated");
+  const scrollCheck = await page.evaluate(() => {
+    const el = document.querySelector(".timeline-scroll"),
+      monitor = document
+        .querySelector(".program-canvas")
+        .getBoundingClientRect();
+    const before = el.scrollTop;
+    el.scrollTop = el.scrollHeight;
+    return {
+      scrollHeight: el.scrollHeight,
+      height: el.clientHeight,
+      top: el.scrollTop,
+      monitor: monitor.y,
+      page: document.scrollingElement.scrollTop,
+    };
+  });
+  assert.ok(
+    scrollCheck.scrollHeight > scrollCheck.height,
+    "Many audio rows must overflow only the timeline",
+  );
+  assert.ok(scrollCheck.top > 0, "Timeline must scroll vertically");
+  assert.equal(scrollCheck.page, 0);
+  await page.locator(".timeline-scroll").evaluate((el) => (el.scrollTop = 0));
   await page
     .getByRole("button", { name: "Audio-Clip Musik 0", exact: true })
     .click();
@@ -234,7 +257,7 @@ try {
   await fits(1050, 740, "all audio removed");
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: no page scrolling at supported window sizes; only populated audio rows remain visible and disappear when removed, with populated project and audio properties",
+    "PASS: no page scrolling at supported window sizes; only populated audio rows exist, fixed-height tracks scroll within timeline, and removed rows disappear, with populated project and audio properties",
     { packaged },
   );
 } catch (error) {

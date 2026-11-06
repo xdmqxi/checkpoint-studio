@@ -1045,3 +1045,25 @@
 .sequence-panel .extra-track-label > svg {
   flex-shrink: 0;
 }
+/* Fixed professional track heights. Extra tracks scroll only inside the timeline. */
+.studio-editor {
+  grid-template-rows: auto minmax(140px, 0.95fr) minmax(300px, 1.05fr);
+}
+.sequence-panel .timeline-scroll {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.sequence-panel .timeline-grid {
+  height: auto;
+  min-height: 100%;
+  align-items: stretch;
+}
+.sequence-panel .timeline-labels,
+.sequence-panel .timeline-lanes {
+  height: auto;
+  min-height: 100%;
+  grid-template-rows: 22px 30px 52px;
+  grid-auto-rows: 40px;
+  align-content: start;
+}

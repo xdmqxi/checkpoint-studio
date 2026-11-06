@@ -1,4 +1,4 @@
-# Checkpoint Studio 0.6.2 – Schnittplatz
+# Checkpoint Studio 0.6.3 – Schnittplatz
 
 Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destruktiv: Clips verweisen auf Ausschnitte aus Originaldateien. Löschen eines Timeline-Clips entfernt keine Originaldatei.
 
@@ -40,8 +40,10 @@ Ein Schnittplatz im Stil professioneller Videoeditoren mit eigenem dunklem SAP-W
 
 ## Fenster und Programm-Updates
 
-Der Editor teilt die verfügbare Fensterhöhe zwischen Vorschau und Timeline auf; alle Spuren bleiben auf der Arbeitsfläche sichtbar. Bei langen Medienlisten und Eigenschaften bleibt die Navigation im jeweiligen Panel.
+Der Editor teilt die verfügbare Fensterhöhe zwischen Vorschau und Timeline auf; die Spuren behalten eine feste Höhe und können innerhalb der Timeline gescrollt werden. Bei langen Medienlisten und Eigenschaften bleibt die Navigation im jeweiligen Panel.
 
 Windows: Im Installations-Wizard wird eine erkannte Vorgängerversion angezeigt. Die neue Installation ersetzt die vorherigen Programmdateien; Einstellungen und extern gespeicherte Projektordner bleiben erhalten. Auf dem Mac die App erneut in Programme ziehen und die vorhandene App ersetzen. Bereits heruntergeladene EXE-/DMG-Dateien im Downloads-Ordner werden nicht automatisch gelöscht.
 
 Die X-Taste an der Mikrofon-/PC-Zeile entfernt diese Quelle aus der Sequenz und dem Export. Die Originaldateien bleiben erhalten. Im Aufnahmemixer kann sie wieder hinzugefügt werden. Beim Entfernen eines importierten Audio-Clips verschwindet dessen komplette Zeile; die Originaldatei bleibt in den Projektmedien.
+
+Die Spurhöhen bleiben konstant. Zusätzliche Spuren werden ausschliesslich innerhalb des Timeline-Bereichs nach oben/unten gescrollt; die übrige Arbeitsfläche bewegt sich dabei nicht.

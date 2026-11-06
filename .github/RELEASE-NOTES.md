@@ -2,7 +2,7 @@
 
 Dunkler SAP-Workflow-Schnittplatz für Bildschirmaufnahmen und Schulungsvideos.
 
-Neu in 0.6.2: Audiozeilen entstehen nur für vorhandene Quellen und verschwinden beim Entfernen wieder. Die Arbeitsfläche passt sich an die Fensterhöhe an, ohne vertikales Scrollen der gesamten Seite. Der Windows-Wizard zeigt bestehende Installationen und ersetzt die alte Programmversion beim Update. Einstellungen und externe Projektordner bleiben erhalten.
+Neu in 0.6.3: Audiozeilen entstehen nur für vorhandene Quellen und verschwinden beim Entfernen wieder. Die Arbeitsfläche passt sich an die Fensterhöhe an, ohne vertikales Scrollen der gesamten Seite. Der Windows-Wizard zeigt bestehende Installationen und ersetzt die alte Programmversion beim Update. Einstellungen und externe Projektordner bleiben erhalten.
 
 - Video- und Audio-Import mit kompatiblen Arbeitskopien; Originale bleiben erhalten.
 - Video schneiden, kürzen, umordnen, duplizieren und rückgängig machen.
@@ -19,3 +19,5 @@ Neu in 0.6.2: Audiozeilen entstehen nur für vorhandene Quellen und verschwinden
 Für Updates die neue Version über die vorhandene installieren. Projektordner bleiben separat erhalten. Es gibt noch keinen automatischen Installer in der App.
 
 Diese Entwicklungsbuilds sind nicht signiert bzw. notarisiert. Die genaue Liste der ausgeführten Prüfungen steht in `VALIDATION.md`; daraus folgt keine Zusicherung für ungetestete Betriebssysteme. Die mitgelieferten Drittanbieter-Lizenzen und Hinweise stehen in `THIRD_PARTY.md` und in den App-Ressourcen. Keine offizielle SAP- oder Adobe-Anwendung und keine SAP-Systemanbindung.
+
+Die Spurhöhen bleiben konstant. Zusätzliche Spuren werden ausschliesslich innerhalb des Timeline-Bereichs nach oben/unten gescrollt; die übrige Arbeitsfläche bewegt sich dabei nicht.
