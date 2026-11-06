@@ -2,7 +2,7 @@
 
 Dunkler Bildschirmrecorder und Mehrspur-Schnittplatz für SAP-Schulungsvideos.
 
-Nach der Veröffentlichung: [Aktuelle Version für Windows und macOS herunterladen](https://github.com/xdmqxi/checkpoint-studio/releases/latest). Die Freunde benötigen den Installer aus den Releases; der Quellcode-ZIP enthält keine fertige App. [Bedienung](BEDIENUNG.md) · [Teilen und Updates](SHARING.md).
+[Aktuelle Version für Windows und macOS herunterladen](https://github.com/xdmqxi/checkpoint-studio/releases/latest). Die Freunde benötigen den Installer aus den Releases; der Quellcode-ZIP enthält keine fertige App. [Bedienung](BEDIENUNG.md) · [Teilen und Updates](SHARING.md).
 
 ![Schnittplatz mit synthetischem Testprojekt](.github/editor-preview.png)
 
