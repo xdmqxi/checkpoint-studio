@@ -490,7 +490,13 @@ function App() {
           ...old,
           takes: [
             ...old.takes,
-            { id, video: file.path, name: file.name, duration: length },
+            {
+              id,
+              video: file.path,
+              name: file.name,
+              duration: length,
+              hasAudio: file.hasAudio,
+            },
           ],
           clips: [...old.clips, { id: clipId, takeId: id, in: 0, out: length }],
         });

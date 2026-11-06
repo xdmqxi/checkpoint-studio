@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld("studio", {
       "write",
       "read",
       "importMedia",
+      "hasAudio",
       "exportVideo",
       "reveal",
     ].map((k) => [k, (...a) => ipcRenderer.invoke(k, ...a)]),

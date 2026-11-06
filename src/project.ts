@@ -6,6 +6,7 @@ export type Take = {
   mic?: string;
   system?: string;
   duration: number;
+  hasAudio?: boolean;
   textEvents?: { time: number; text: LiveText }[];
 };
 export type Clip = {
@@ -38,6 +39,7 @@ export type Project = {
   takes: Take[];
   clips: Clip[];
   audioTracks?: AudioTrack[];
+  disabledAudioSources?: string[];
   audioLibrary?: AudioTrack[];
   checkpoints: {
     id: string;

@@ -157,6 +157,6 @@ Dunkler Schnittplatz mit Projektmedien, Programmvorschau, Eigenschaften und geme
 
 ## Fensterlayout und Windows-Updates (0.6.1)
 
-Der Schnittplatz passt sich an die Fensterhöhe an. Vorschau, Werkzeuge und alle Spuren bleiben ohne vertikales Scrollen der gesamten Seite sichtbar. Medienlisten und Eigenschaften sind innerhalb ihrer eigenen Bereiche begrenzt.
+Der Schnittplatz passt sich an die Fensterhöhe an. Vorschau, Werkzeuge und nur tatsächlich vorhandene Audioquellen werden als Zeilen gezeigt und alle Spuren bleiben ohne vertikales Scrollen der gesamten Seite sichtbar. Medienlisten und Eigenschaften sind innerhalb ihrer eigenen Bereiche begrenzt.
 
 Der Windows-Wizard erkennt eine vorhandene Installation und zeigt die bisherige Version an. Beim Update entfernt der NSIS-Upgradepfad die alten Programmdateien, bevor die neue Version installiert wird. App-ID und Installer-Identität bleiben stabil, Einstellungen werden behalten; externe Projektordner sind nicht Teil der Deinstallation. Auf macOS die vorhandene App im Programme-Ordner ersetzen.

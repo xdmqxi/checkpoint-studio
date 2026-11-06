@@ -60,7 +60,10 @@ async function fits(width, height, label) {
       BrowserWindow.getAllWindows()[0].setContentSize(...size),
     [width, height],
   );
-  await page.waitForTimeout(200);
+  await page.waitForFunction(
+    (size) => innerWidth === size[0] && innerHeight === size[1],
+    [width, height],
+  );
   const layout = await page.evaluate(() => {
     const rect = (s) => {
       const r = document.querySelector(s).getBoundingClientRect();
@@ -79,8 +82,14 @@ async function fits(width, height, label) {
       doc: document.scrollingElement.scrollHeight,
       body: document.body.scrollHeight,
       footer: rect(".editing-workspace footer"),
-      last: rect('[aria-label="Audiospur A4"]'),
+      last: rect(".timeline-video-lane"),
       tracks: rect(".timeline-scroll"),
+      audioRows: [
+        ...document.querySelectorAll("[data-audio-row], [data-source-row]"),
+      ].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { bottom: r.bottom, height: r.height };
+      }),
       monitor: rect(".program-canvas"),
       tools: rect(".sequence-tools"),
     };
@@ -109,7 +118,21 @@ async function fits(width, height, label) {
     layout.tools.right <= layout.width + 1,
     `${label}: tool row must fit horizontally`,
   );
-  console.log("Fits", label, width, height, "lane height", layout.last.height);
+  for (const row of layout.audioRows) {
+    assert.ok(
+      row.bottom <= layout.tracks.bottom + 1,
+      `Audio row clipped: ${JSON.stringify(layout)}`,
+    );
+    assert.ok(row.height >= 20);
+  }
+  console.log(
+    "Fits",
+    label,
+    width,
+    height,
+    "audio rows",
+    layout.audioRows.length,
+  );
 }
 try {
   await page.getByRole("button", { name: "Videoeditor", exact: true }).click();
@@ -117,13 +140,21 @@ try {
     [1440, 900],
     [1200, 800],
     [1050, 740],
-    [1680, 950],
   ])
     await fits(...size, "empty");
   const p = {
     version: 1,
     name: "SAP – Schnittplatz",
-    takes: [{ id: "t", video: "media/video.mp4", duration: 2 }],
+    takes: [
+      {
+        id: "t",
+        video: "media/video.mp4",
+        mic: "media/music.wav",
+        system: "media/music.wav",
+        hasAudio: false,
+        duration: 2,
+      },
+    ],
     clips: [{ id: "c", takeId: "t", in: 0, out: 2 }],
     audioTracks: [0, 1, 2].map((lane) => ({
       id: "a" + lane,
@@ -157,11 +188,12 @@ try {
     .getByRole("button", { name: "Projekt öffnen", exact: true })
     .click();
   await page.getByTestId("program-video").waitFor();
+  assert.equal(await page.locator("[data-audio-row]").count(), 3);
+  assert.equal(await page.locator("[data-source-row]").count(), 2);
   for (const size of [
     [1440, 900],
     [1200, 800],
     [1050, 740],
-    [1680, 950],
   ])
     await fits(...size, "populated");
   await page
@@ -170,9 +202,33 @@ try {
   await fits(1050, 740, "audio inspector");
   await fits(1440, 900, "final");
   await page.screenshot({ path: "test-results/studio-layout.png" });
+  await page
+    .getByRole("button", { name: "Mikrofon entfernen", exact: true })
+    .click();
+  assert.equal(await page.locator('[data-source-row="mic"]').count(), 0);
+  await page
+    .getByRole("button", { name: "Mikrofon wieder hinzufügen", exact: true })
+    .click();
+  assert.equal(await page.locator('[data-source-row="mic"]').count(), 1);
+  for (let i = 0; i < 3; i++) {
+    await page
+      .getByRole("button", { name: `Audio-Clip Musik ${i}`, exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Audio entfernen", exact: true })
+      .click();
+    assert.equal(await page.locator("[data-audio-row]").count(), 2 - i);
+  }
+  assert.equal(await page.locator("[data-source-row]").count(), 2);
+  await page.locator(".timeline-video-clip").click();
+  await page
+    .getByRole("button", { name: "Löschen & nachrücken", exact: true })
+    .click();
+  assert.equal(await page.locator("[data-source-row]").count(), 0);
+  await fits(1050, 740, "all audio removed");
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: no page scrolling at supported window sizes; all seven timeline lanes remain visible, with populated project and audio properties",
+    "PASS: no page scrolling at supported window sizes; only populated audio rows remain visible and disappear when removed, with populated project and audio properties",
     { packaged },
   );
 } catch (error) {

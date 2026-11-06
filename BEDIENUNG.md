@@ -20,10 +20,10 @@ Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destr
 
 ## Musik und Sprache bearbeiten
 
-- A1 zeigt den zur Videoquelle gehörenden Aufnahmeton. A2–A4 sind drei unabhängige Audiospuren für importierte Musik, Sprache und weitere Töne. Überlappende Audioclips werden zusammen gemischt.
-- Die Wellenform wird aus echten Audiosamples berechnet. Den Körper eines Audio-Clips horizontal verschieben; vertikales Ziehen wechselt die Spur. Die Kanten kürzen den Quellausschnitt.
+- Es werden nur vorhandene Audioquellen angezeigt: Mikrofon und PC-/Videoton, wenn die verwendeten Videoclips diese Quellen enthalten, sowie eine eigene Zeile je importiertem Audio-Clip. Leere Reserve-Spuren gibt es nicht. Überlappende Audioclips werden zusammen gemischt.
+- Die Wellenform wird aus echten Audiosamples berechnet. Den Körper eines Audio-Clips horizontal verschieben; jeder importierte Audio-Clip behält seine eigene Zeile. Die Kanten kürzen den Quellausschnitt.
 - Mit eingeschaltetem **Einrasten (S)** rasten verschobene Audioclips an Videoschnitten, Checkpoints und dem Abspielkopf ein. **Alt** beim Ziehen umgeht es vorübergehend.
-- Nach Auswahl eines Audio-Clips zeigt der Eigenschaftenbereich Position, Quell-Start/-Ende, Lautstärke, Einblenden, Ausblenden und Spur. Fades werden in Sekunden eingestellt und in Vorschau sowie Export angewendet.
+- Nach Auswahl eines Audio-Clips zeigt der Eigenschaftenbereich Position, Quell-Start/-Ende, Lautstärke, Einblenden und Ausblenden. Fades werden in Sekunden eingestellt und in Vorschau sowie Export angewendet.
 - **Teilen**, **Duplizieren** und **Audio entfernen** wirken auf den ausgewählten Audio-Clip. Die Rasierklinge funktioniert auch hier. Entfernte Audio-Clips bleiben als Original in den Projektmedien verfügbar.
 - **Stummschalten** nimmt den jeweiligen Audio-Clip aus Vorschau und Export.
 
@@ -36,10 +36,12 @@ Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destr
 
 ## Umfang
 
-Ein Schnittplatz im Stil professioneller Videoeditoren mit eigenem dunklem SAP-Workflow-Design. Enthalten sind eine Videospur und vier Audiobereiche, keine übereinanderliegenden Videospuren, Videoübergänge, Farbkorrektur, Untertitel- oder KI-Funktionen. Die Aufnahme enthält Bildschirm und optional Mikrofon; Systemton-Aufnahme bleibt in dieser Version deaktiviert. Importierter Videoton wird unterstützt. Eine Windows-x64-Version wird gebaut; eine tatsächliche Windows-Laufzeitprüfung muss auf einem Windows-PC erfolgen.
+Ein Schnittplatz im Stil professioneller Videoeditoren mit eigenem dunklem SAP-Workflow-Design. Enthalten sind eine Videospur und dynamische Audiobereiche, keine übereinanderliegenden Videospuren, Videoübergänge, Farbkorrektur, Untertitel- oder KI-Funktionen. Die Aufnahme enthält Bildschirm und optional Mikrofon; Systemton-Aufnahme bleibt in dieser Version deaktiviert. Importierter Videoton wird unterstützt. Eine Windows-x64-Version wird gebaut; eine tatsächliche Windows-Laufzeitprüfung muss auf einem Windows-PC erfolgen.
 
 ## Fenster und Programm-Updates
 
 Der Editor teilt die verfügbare Fensterhöhe zwischen Vorschau und Timeline auf; alle Spuren bleiben auf der Arbeitsfläche sichtbar. Bei langen Medienlisten und Eigenschaften bleibt die Navigation im jeweiligen Panel.
 
 Windows: Im Installations-Wizard wird eine erkannte Vorgängerversion angezeigt. Die neue Installation ersetzt die vorherigen Programmdateien; Einstellungen und extern gespeicherte Projektordner bleiben erhalten. Auf dem Mac die App erneut in Programme ziehen und die vorhandene App ersetzen. Bereits heruntergeladene EXE-/DMG-Dateien im Downloads-Ordner werden nicht automatisch gelöscht.
+
+Die X-Taste an der Mikrofon-/PC-Zeile entfernt diese Quelle aus der Sequenz und dem Export. Die Originaldateien bleiben erhalten. Im Aufnahmemixer kann sie wieder hinzugefügt werden. Beim Entfernen eines importierten Audio-Clips verschwindet dessen komplette Zeile; die Originaldatei bleibt in den Projektmedien.

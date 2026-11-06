@@ -3,6 +3,8 @@ import {
   Flag,
   Video,
   Mic,
+  Volume2,
+  X,
   Minus,
   Plus,
   Trash2,
@@ -40,6 +42,9 @@ type Props = {
   onRazor: (id: string, time: number, audio: boolean) => void;
   onDropAsset: (id: string, time: number, lane: number) => void;
   onDropTake: (id: string, index: number) => void;
+  sourceRows: { id: string; name: string }[];
+  embeddedAudio: Record<string, boolean>;
+  onRemoveSource: (id: string) => void;
 };
 export function EditorTimeline({
   project: p,
@@ -59,6 +64,9 @@ export function EditorTimeline({
   onRazor,
   onDropAsset,
   onDropTake,
+  sourceRows,
+  embeddedAudio,
+  onRemoveSource,
 }: Props) {
   const [dragAudio, setDragAudio] = useState<AudioTrack | null>(null);
   const [dragVideo, setDragVideo] = useState<any>(null);
@@ -138,11 +146,6 @@ export function EditorTimeline({
             8 / pps,
             snap && !event.altKey,
           ),
-          lane: clamp(
-            (track.lane || 0) + Math.round((event.clientY - y) / 64),
-            0,
-            2,
-          ),
         };
       else latest = trimAudio(track, edge, delta);
       setDragAudio(latest);
@@ -213,7 +216,16 @@ export function EditorTimeline({
         </div>
       </div>
       <div className="timeline-scroll" ref={viewport}>
-        <div className="timeline-grid" style={{ width: width + 112 }}>
+        <div
+          className="timeline-grid"
+          style={
+            {
+              width: width + 112,
+              "--audio-row-count":
+                sourceRows.length + (p.audioTracks || []).length,
+            } as React.CSSProperties
+          }
+        >
           <div className="timeline-labels">
             <span>Zeit</span>
             <span>
@@ -224,14 +236,23 @@ export function EditorTimeline({
               <Video size={15} />
               Video
             </span>
-            <span>
-              <Mic size={15} />
-              A1 · Aufnahme
-            </span>
-            {[0, 1, 2].map((n) => (
-              <span className="extra-track-label" key={n}>
-                <Music2 size={14} /> A{n + 2} ·{" "}
-                {["Musik", "Sprache", "Zusatz"][n]}
+            {sourceRows.map((row) => (
+              <span className="source-track-label" key={row.id}>
+                {row.id === "mic" ? <Mic size={13} /> : <Volume2 size={13} />}
+                <span>{row.name}</span>
+                <button
+                  aria-label={`${row.name} entfernen`}
+                  title="Audiospur aus der Sequenz entfernen"
+                  onClick={() => onRemoveSource(row.id)}
+                >
+                  <X size={10} />
+                </button>
+              </span>
+            ))}
+            {(p.audioTracks || []).map((t: AudioTrack) => (
+              <span className="extra-track-label" key={t.id} title={t.name}>
+                <Music2 size={13} />
+                <span>{t.name}</span>
               </span>
             ))}
           </div>
@@ -382,141 +403,162 @@ export function EditorTimeline({
                 </button>
               ))}
             </div>
-            <div className="timeline-audio-lane">
-              {clips.map((c: any) => (
-                <div
-                  className="timeline-audio-clip"
-                  style={{
-                    left: c.start * pps,
-                    width: Math.max(2, (c.out - c.in) * pps),
-                  }}
-                  key={c.id}
-                >
-                  <Mic size={13} />
-                  {p.takes.find((t: any) => t.id === c.takeId)?.mic
-                    ? "Mikrofon"
-                    : "Keine Mikrofonspur"}
-                </div>
-              ))}
-            </div>
-            {[0, 1, 2].map((lane) => (
+            {sourceRows.map((row) => (
               <div
-                className="extra-audio-lane"
-                key={lane}
-                data-lane={lane}
-                aria-label={`Audiospur A${lane + 2}`}
-                onClick={position}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const id = e.dataTransfer.getData("asset");
-                  if (id) {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    onDropAsset(
-                      id,
-                      snapTime(
-                        (e.clientX - rect.left) / pps,
-                        points,
-                        8 / pps,
-                        snap,
-                      ),
-                      lane,
-                    );
-                  }
-                }}
+                className="timeline-audio-lane"
+                key={row.id}
+                aria-label={`Audiospur ${row.name}`}
+                data-source-row={row.id}
               >
-                {(p.audioTracks || [])
-                  .map((original: AudioTrack) =>
-                    dragAudio?.id === original.id ? dragAudio : original,
-                  )
-                  .filter((t: AudioTrack) => (t.lane || 0) === lane)
-                  .map((t: AudioTrack) => (
-                    <button
-                      key={t.id}
-                      className={
-                        "timeline-music-clip " +
-                        (selectedAudio === t.id ? "selected " : "") +
-                        (t.muted ? "muted" : "")
-                      }
-                      aria-label={`Audio-Clip ${t.name}`}
+                {clips
+                  .filter((c: any) => {
+                    const take = p.takes.find((t: any) => t.id === c.takeId);
+                    return row.id === "mic"
+                      ? !!take?.mic
+                      : !!(
+                          take?.system ||
+                          take?.hasAudio ||
+                          embeddedAudio[take?.id]
+                        );
+                  })
+                  .map((c: any) => (
+                    <div
+                      className="timeline-audio-clip"
+                      key={c.id}
                       style={{
-                        left: t.start * pps,
-                        width: Math.max(3, (t.out - t.in) * pps),
-                      }}
-                      onPointerDown={(e) => editAudio(e, t, "move")}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (dragging.current) {
-                          dragging.current = false;
-                          return;
-                        }
-                        if (tool === "razor") {
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          onRazor(
-                            t.id,
-                            t.start + (e.clientX - rect.left) / pps,
-                            true,
-                          );
-                        } else onAudioSelect(t.id);
+                        left: c.start * pps,
+                        width: Math.max(2, (c.out - c.in) * pps),
                       }}
                     >
-                      <span
-                        className="trim-handle start"
-                        title="Audioanfang kürzen"
-                        onPointerDown={(e) => editAudio(e, t, "start")}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <span className="audio-clip-name">
-                        {t.muted ? <VolumeX size={11} /> : <Music2 size={11} />}{" "}
-                        {t.name}
-                      </span>
-                      <svg
-                        className="audio-waveform"
-                        viewBox="0 0 100 100"
-                        preserveAspectRatio="none"
-                        aria-label="Audio-Wellenform"
-                      >
-                        <path
-                          d={peakPath(
-                            t.peaks,
-                            t.in / (t.duration || t.out),
-                            t.out / (t.duration || t.out),
-                          )}
-                        />
-                      </svg>
-                      {!!t.fadeIn && (
-                        <span
-                          className="fade-guide fade-in"
-                          style={{
-                            width: Math.min(t.fadeIn, t.out - t.in) * pps,
-                          }}
-                        />
-                      )}
-                      {!!t.fadeOut && (
-                        <span
-                          className="fade-guide fade-out"
-                          style={{
-                            width: Math.min(t.fadeOut, t.out - t.in) * pps,
-                          }}
-                        />
-                      )}
-                      <span
-                        className="trim-handle end"
-                        title="Audioende kürzen"
-                        onPointerDown={(e) => editAudio(e, t, "end")}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </button>
+                      {row.id === "mic" ? (
+                        <Mic size={12} />
+                      ) : (
+                        <Volume2 size={12} />
+                      )}{" "}
+                      {row.name}
+                    </div>
                   ))}
-                {!(p.audioTracks || []).some(
-                  (t: AudioTrack) => (t.lane || 0) === lane,
-                ) && (
-                  <span className="lane-drop-hint">
-                    Audio aus Projektmedien hierher ziehen
-                  </span>
-                )}
               </div>
             ))}
+            {(p.audioTracks || []).map(
+              (original: AudioTrack, index: number) => {
+                const lane = index;
+                const track =
+                  dragAudio?.id === original.id ? dragAudio : original;
+                return (
+                  <div
+                    className="extra-audio-lane"
+                    key={original.id}
+                    data-lane={lane}
+                    data-audio-row={original.id}
+                    aria-label={`Audiospur ${original.name}`}
+                    onClick={position}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const id = e.dataTransfer.getData("asset");
+                      if (id) {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        onDropAsset(
+                          id,
+                          snapTime(
+                            (e.clientX - rect.left) / pps,
+                            points,
+                            8 / pps,
+                            snap,
+                          ),
+                          lane,
+                        );
+                      }
+                    }}
+                  >
+                    {[track].map((t: AudioTrack) => (
+                      <button
+                        key={t.id}
+                        className={
+                          "timeline-music-clip " +
+                          (selectedAudio === t.id ? "selected " : "") +
+                          (t.muted ? "muted" : "")
+                        }
+                        aria-label={`Audio-Clip ${t.name}`}
+                        style={{
+                          left: t.start * pps,
+                          width: Math.max(3, (t.out - t.in) * pps),
+                        }}
+                        onPointerDown={(e) => editAudio(e, t, "move")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (dragging.current) {
+                            dragging.current = false;
+                            return;
+                          }
+                          if (tool === "razor") {
+                            const rect =
+                              e.currentTarget.getBoundingClientRect();
+                            onRazor(
+                              t.id,
+                              t.start + (e.clientX - rect.left) / pps,
+                              true,
+                            );
+                          } else onAudioSelect(t.id);
+                        }}
+                      >
+                        <span
+                          className="trim-handle start"
+                          title="Audioanfang kürzen"
+                          onPointerDown={(e) => editAudio(e, t, "start")}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <span className="audio-clip-name">
+                          {t.muted ? (
+                            <VolumeX size={11} />
+                          ) : (
+                            <Music2 size={11} />
+                          )}{" "}
+                          {t.name}
+                        </span>
+                        <svg
+                          className="audio-waveform"
+                          viewBox="0 0 100 100"
+                          preserveAspectRatio="none"
+                          aria-label="Audio-Wellenform"
+                        >
+                          <path
+                            d={peakPath(
+                              t.peaks,
+                              t.in / (t.duration || t.out),
+                              t.out / (t.duration || t.out),
+                            )}
+                          />
+                        </svg>
+                        {!!t.fadeIn && (
+                          <span
+                            className="fade-guide fade-in"
+                            style={{
+                              width: Math.min(t.fadeIn, t.out - t.in) * pps,
+                            }}
+                          />
+                        )}
+                        {!!t.fadeOut && (
+                          <span
+                            className="fade-guide fade-out"
+                            style={{
+                              width: Math.min(t.fadeOut, t.out - t.in) * pps,
+                            }}
+                          />
+                        )}
+                        <span
+                          className="trim-handle end"
+                          title="Audioende kürzen"
+                          onPointerDown={(e) => editAudio(e, t, "end")}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                );
+              },
+            )}
             <div
               className="timeline-playhead"
               style={{ left: Math.min(width, playhead * pps) }}

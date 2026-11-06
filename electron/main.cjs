@@ -109,6 +109,7 @@ ipcMain.handle(
   "read",
   async (_, rel) => new Uint8Array(await fs.readFile(inside(rel))),
 );
+ipcMain.handle("hasAudio", (_, rel) => run(["-i", inside(rel)], true));
 ipcMain.handle("importMedia", async (_, kind) => {
   if (!root) throw Error("Bitte zuerst ein Projekt erstellen oder öffnen.");
   const audio = kind === "audio";
@@ -187,7 +188,12 @@ ipcMain.handle("importMedia", async (_, kind) => {
               inside(rel),
             ],
       );
-      result.push({ path: rel, sourcePath, name: path.basename(file) });
+      result.push({
+        path: rel,
+        sourcePath,
+        name: path.basename(file),
+        hasAudio: audio || (await run(["-i", inside(rel)], true)),
+      });
     } catch (error) {
       await fs.rm(inside(rel), { force: true });
       await fs.rm(inside(sourcePath), { force: true });
@@ -239,7 +245,9 @@ ipcMain.handle("exportVideo", async (_, project, options = {}) => {
             await run(["-i", inside(take.video)], true),
           );
         if (sourceAudio.get(take.video))
-          audio.push(`[0:a]volume=${project.volume.system * clipGain}`);
+          audio.push(
+            `[0:a]volume=${(project.disabledAudioSources?.includes("system") ? 0 : project.volume.system) * clipGain}`,
+          );
       }
       let idx = 1;
       for (const a of ["system", "mic"])
@@ -252,7 +260,9 @@ ipcMain.handle("exportVideo", async (_, project, options = {}) => {
             "-i",
             inside(take[a]),
           );
-          audio.push(`[${idx++}:a]volume=${project.volume[a] * clipGain}`);
+          audio.push(
+            `[${idx++}:a]volume=${(project.disabledAudioSources?.includes(a) ? 0 : project.volume[a]) * clipGain}`,
+          );
         }
       // Every segment has an audio stream of exactly its video length.
       args.push(

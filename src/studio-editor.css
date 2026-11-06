@@ -998,3 +998,50 @@
     margin-bottom: 4px;
   }
 }
+/* Audio rows follow actual content; removed clips do not leave empty lanes. */
+.studio-editor {
+  grid-template-rows: auto minmax(140px, 0.95fr) minmax(
+      clamp(298px, calc(298px + var(--audio-count, 0) * 20px), 420px),
+      1.05fr
+    );
+}
+.sequence-panel .timeline-scroll {
+  min-height: 0;
+  overflow-y: auto;
+}
+.sequence-panel .timeline-grid {
+  min-height: calc(88px + var(--audio-row-count, 0) * 20px);
+}
+.sequence-panel .timeline-labels,
+.sequence-panel .timeline-lanes {
+  grid-template-rows: 22px 30px minmax(36px, 1.3fr);
+  grid-auto-rows: minmax(20px, 1fr);
+}
+.sequence-panel .timeline-labels > span {
+  min-width: 0;
+}
+.sequence-panel .timeline-labels .source-track-label,
+.sequence-panel .timeline-labels .extra-track-label {
+  height: auto;
+  min-height: 0;
+  gap: 4px;
+}
+.source-track-label > span,
+.extra-track-label > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sequence-panel .source-track-label button {
+  padding: 1px;
+  border: 0;
+  min-height: 16px;
+  margin-left: auto;
+  flex-shrink: 0;
+  background: transparent;
+}
+.sequence-panel .source-track-label > svg,
+.sequence-panel .extra-track-label > svg {
+  flex-shrink: 0;
+}

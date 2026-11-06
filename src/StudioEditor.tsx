@@ -144,6 +144,56 @@ export function StudioEditor(props: Props) {
     onError,
   );
   const assets = p.audioLibrary || p.audioTracks || [];
+  const [embeddedAudio, setEmbeddedAudio] = useState<Record<string, boolean>>(
+    {},
+  );
+  const audioProbes = useRef(new Map<string, Promise<boolean>>());
+  const usedTakes = p.takes.filter((t) =>
+    p.clips.some((c) => c.takeId === t.id),
+  );
+  const probeKey = usedTakes
+    .map((t) => [t.id, t.video, t.hasAudio, t.mic, t.system].join(":"))
+    .sort()
+    .join("|");
+  useEffect(() => {
+    let alive = true;
+    Promise.all(
+      usedTakes.map(async (take) => {
+        if (take.hasAudio !== undefined)
+          return [take.id, take.hasAudio] as const;
+        if (take.mic || take.system) return [take.id, false] as const;
+        if (!audioProbes.current.has(take.video))
+          audioProbes.current.set(
+            take.video,
+            window.studio.hasAudio(take.video),
+          );
+        return [take.id, await audioProbes.current.get(take.video)] as const;
+      }),
+    )
+      .then((entries) => {
+        if (alive)
+          setEmbeddedAudio(
+            Object.fromEntries(entries) as Record<string, boolean>,
+          );
+      })
+      .catch(onError);
+    return () => {
+      alive = false;
+    };
+  }, [probeKey]);
+  const availableSources = [
+    ...(usedTakes.some((t) => t.mic) ? [{ id: "mic", name: "Mikrofon" }] : []),
+    ...(usedTakes.some((t) => t.system || t.hasAudio || embeddedAudio[t.id])
+      ? [{ id: "system", name: "PC / Videoton" }]
+      : []),
+  ];
+  const sourceRows = availableSources.filter(
+    (row) => !p.disabledAudioSources?.includes(row.id),
+  );
+  function sourceDisabled(id: string) {
+    return current.current.project.disabledAudioSources?.includes(id);
+  }
+
   const knownAudio = useRef(new Set((p.audioTracks || []).map((t) => t.id)));
   useEffect(() => {
     const tracks = p.audioTracks || [],
@@ -187,8 +237,8 @@ export function StudioEditor(props: Props) {
     const project = current.current.project,
       gain = clip.muted ? 0 : (clip.volume ?? 1);
     for (const [element, volume] of [
-      [mic.current, project.volume.mic],
-      [system.current, project.volume.system],
+      [mic.current, sourceDisabled("mic") ? 0 : project.volume.mic],
+      [system.current, sourceDisabled("system") ? 0 : project.volume.system],
     ] as const) {
       if (!element?.getAttribute("src")) continue;
       element.volume = clamp(volume * gain, 0, 1);
@@ -201,7 +251,11 @@ export function StudioEditor(props: Props) {
       else element.pause();
     }
     if (video.current)
-      video.current.volume = clamp(project.volume.system * gain, 0, 1);
+      video.current.volume = clamp(
+        (sourceDisabled("system") ? 0 : project.volume.system) * gain,
+        0,
+        1,
+      );
     for (const track of project.audioTracks || []) {
       const element = audios.current.get(track.id);
       if (!element) continue;
@@ -370,7 +424,13 @@ export function StudioEditor(props: Props) {
         intent.current,
         true,
       );
-  }, [p.volume, p.audioTracks, selected?.volume, selected?.muted]);
+  }, [
+    p.volume,
+    p.audioTracks,
+    p.disabledAudioSources,
+    selected?.volume,
+    selected?.muted,
+  ]);
   useEffect(() => {
     if (
       selected &&
@@ -569,7 +629,15 @@ export function StudioEditor(props: Props) {
   const videoLabel =
     take?.name || `Take ${p.takes.findIndex((t) => t.id === take?.id) + 1}`;
   return (
-    <section className="studio-editor" aria-label="Schnittarbeitsplatz">
+    <section
+      className="studio-editor"
+      aria-label="Schnittarbeitsplatz"
+      style={
+        {
+          "--audio-count": sourceRows.length + (p.audioTracks || []).length,
+        } as React.CSSProperties
+      }
+    >
       <div className="studio-top">
         <div>
           <span className="eyebrow">SAP ENABLEMENT / SCHNITT</span>
@@ -717,7 +785,9 @@ export function StudioEditor(props: Props) {
               </div>
             )}
           </div>
-          <div className="bin-footer">Video → V1 · Musik & Sprache → A2–A4</div>
+          <div className="bin-footer">
+            Video und Audio aus den Projektmedien hinzufügen
+          </div>
         </div>
         <div className="studio-panel program-monitor">
           <div className="panel-caption">
@@ -882,20 +952,6 @@ export function StudioEditor(props: Props) {
                   />
                 </label>
               </div>
-              <label>
-                Spur
-                <select
-                  aria-label="Audiospur"
-                  value={audio.lane || 0}
-                  onChange={(e) => patchAudio({ lane: +e.target.value })}
-                >
-                  {[0, 1, 2].map((n) => (
-                    <option key={n} value={n}>
-                      A{n + 2} · {["Musik", "Sprache", "Zusatz"][n]}
-                    </option>
-                  ))}
-                </select>
-              </label>
               <button
                 className={audio.muted ? "active" : ""}
                 onClick={() => patchAudio({ muted: !audio.muted })}
@@ -935,29 +991,51 @@ export function StudioEditor(props: Props) {
           ) : (
             <p>Clip auswählen, um ihn zu bearbeiten.</p>
           )}
-          <div className="mixer-title">Aufnahmemixer</div>
-          {(["mic", "system"] as const).map((key) => (
-            <label key={key}>
-              {key === "mic" ? "Mikrofon" : "System / Video"} ·{" "}
-              {Math.round(p.volume[key] * 100)} %
-              <input
-                aria-label={
-                  key === "mic" ? "Mikrofon Lautstärke" : "System Lautstärke"
-                }
-                type="range"
-                min="0"
-                max="1"
-                step=".01"
-                value={p.volume[key]}
-                onChange={(e) =>
+          {availableSources.length > 0 && (
+            <div className="mixer-title">Aufnahmemixer</div>
+          )}
+          {availableSources
+            .filter((row) => p.disabledAudioSources?.includes(row.id))
+            .map((row) => (
+              <button
+                key={row.id}
+                onClick={() =>
                   edit({
                     ...p,
-                    volume: { ...p.volume, [key]: +e.target.value },
+                    disabledAudioSources: (p.disabledAudioSources || []).filter(
+                      (id) => id !== row.id,
+                    ),
                   })
                 }
-              />
-            </label>
-          ))}
+              >
+                <Plus size={12} />
+                {row.name} wieder hinzufügen
+              </button>
+            ))}
+          {(["mic", "system"] as const)
+            .filter((key) => sourceRows.some((row) => row.id === key))
+            .map((key) => (
+              <label key={key}>
+                {key === "mic" ? "Mikrofon" : "System / Video"} ·{" "}
+                {Math.round(p.volume[key] * 100)} %
+                <input
+                  aria-label={
+                    key === "mic" ? "Mikrofon Lautstärke" : "System Lautstärke"
+                  }
+                  type="range"
+                  min="0"
+                  max="1"
+                  step=".01"
+                  value={p.volume[key]}
+                  onChange={(e) =>
+                    edit({
+                      ...p,
+                      volume: { ...p.volume, [key]: +e.target.value },
+                    })
+                  }
+                />
+              </label>
+            ))}
         </div>
       </div>
       <div className="studio-panel sequence-panel">
@@ -1131,6 +1209,14 @@ export function StudioEditor(props: Props) {
               checkpoints: p.checkpoints.filter((c) => c.id !== id),
             })
           }
+          sourceRows={sourceRows}
+          embeddedAudio={embeddedAudio}
+          onRemoveSource={(id) =>
+            edit({
+              ...p,
+              disabledAudioSources: [...(p.disabledAudioSources || []), id],
+            })
+          }
           onAudioSelect={setAudioId}
           onAudioChange={(next) =>
             edit({
@@ -1182,7 +1268,7 @@ export function StudioEditor(props: Props) {
           }}
         />
         <div className="sequence-footer">
-          <span>V1: Bild · A1: Aufnahmeton · A2–A4: Musik & Sprache</span>
+          <span>Nur vorhandene Audioquellen werden angezeigt</span>
           <span>
             Audio bleibt beim Videoschnitt an seiner Zeitposition · Ende:{" "}
             {timeLabel(total)}

@@ -130,11 +130,7 @@ try {
   await page.getByLabel("Audio einblenden", { exact: true }).fill("0.5");
   await page.getByLabel("Audio ausblenden", { exact: true }).fill("0.5");
   await page.getByLabel("Audio Ende", { exact: true }).fill("2");
-  await page.getByLabel("Audiospur", { exact: true }).selectOption("1");
-  assert.equal(
-    await page.locator('[data-lane="1"] .timeline-music-clip').count(),
-    1,
-  );
+  assert.equal(await page.locator("[data-audio-row]").count(), 1);
   // Preview must actually advance across a different source and continue imported sound.
   await page.getByRole("button", { name: "Zum Anfang", exact: true }).click();
   await page
@@ -184,7 +180,7 @@ try {
   });
   await page.mouse.up();
   p = await saved();
-  assert.equal(p.audioTracks[0].lane, 2);
+  assert.equal(await page.locator("[data-audio-row]").count(), 1);
   assert.ok(p.audioTracks[0].start > 0.2);
   b = await audioClip.boundingBox();
   await page.mouse.move(b.x + b.width - 3, b.y + b.height / 2);
@@ -248,9 +244,11 @@ try {
   const firstClip = clips.first();
   await firstClip.scrollIntoViewIfNeeded();
   const vb = await firstClip.boundingBox();
-  await page.mouse.move(vb.x + vb.width - 3, vb.y + 40);
+  await page.mouse.move(vb.x + vb.width - 3, vb.y + vb.height / 2);
   await page.mouse.down();
-  await page.mouse.move(vb.x + vb.width - 35, vb.y + 40, { steps: 6 });
+  await page.mouse.move(vb.x + vb.width - 35, vb.y + vb.height / 2, {
+    steps: 6,
+  });
   await page.mouse.up();
   p = await saved();
   assert.ok(p.clips[0].out < 1.4);
@@ -278,7 +276,7 @@ try {
   assert.match(info, /Audio: aac/);
   assert.deepEqual(errors, []);
   console.log(
-    "PASS: normalized AIFF import, waveform, fades, multitrack drag/trim, cross-source playback with real audio, mute, split/undo, library reuse, razor, keyboard undo, 720p UI export",
+    "PASS: normalized AIFF import, waveform, fades, dynamic audio rows and drag/trim, cross-source playback with real audio, mute, split/undo, library reuse, razor, keyboard undo, 720p UI export",
     { packaged },
   );
 } catch (error) {

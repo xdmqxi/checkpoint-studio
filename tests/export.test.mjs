@@ -212,6 +212,8 @@ test("real imports: AIFF normalized to WAV, MKV normalized to MP4, embedded audi
     answers.push(video);
     const [media] = await handlers.importMedia(null, "video");
     assert.ok(media.path.endsWith(".mp4"));
+    assert.equal(media.hasAudio, true);
+    assert.equal(await handlers.hasAudio(null, media.path), true);
     assert.match(
       run(["-i", path.join(root, media.path), "-f", "null", "-"]),
       /Audio: aac/,
@@ -247,6 +249,31 @@ test("real imports: AIFF normalized to WAV, MKV normalized to MP4, embedded audi
     for (let i = 0; i < samples.length; i += 2)
       peak = Math.max(peak, Math.abs(samples.readInt16LE(i)));
     assert.ok(peak > 1000, "Embedded video sound must remain audible");
+    const mutedOutput = path.join(dir, "source-removed.mp4");
+    answers.push(mutedOutput);
+    await handlers.exportVideo(
+      null,
+      { ...p, disabledAudioSources: ["system"] },
+      { height: 720 },
+    );
+    const mutedSamples = spawnSync(ffmpeg, [
+      "-i",
+      mutedOutput,
+      "-f",
+      "s16le",
+      "-ac",
+      "1",
+      "-ar",
+      "8000",
+      "pipe:1",
+    ]).stdout;
+    let mutedPeak = 0;
+    for (let i = 0; i < mutedSamples.length; i += 2)
+      mutedPeak = Math.max(mutedPeak, Math.abs(mutedSamples.readInt16LE(i)));
+    assert.ok(
+      mutedPeak < 5,
+      "Removed PC/video audio source must be silent in export",
+    );
     const invalid = path.join(dir, "broken.mp3");
     await writeFile(invalid, "This is not audio");
     answers.push(invalid);
