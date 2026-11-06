@@ -6,7 +6,7 @@ Neu in 0.6.1: Audiozeilen entstehen nur für vorhandene Quellen und verschwinden
 
 - Video- und Audio-Import mit kompatiblen Arbeitskopien; Originale bleiben erhalten.
 - Video schneiden, kürzen, umordnen, duplizieren und rückgängig machen.
-- Drei zusätzliche Audiospuren mit Wellenformen, Verschieben, Kürzen, Lautstärke, Stummschaltung und Ein-/Ausblenden.
+- Dynamische Audiozeilen für vorhandene Quellen mit Wellenformen, Verschieben, Kürzen, Lautstärke, Stummschaltung und Ein-/Ausblenden.
 - Durchgehende Vorschau, Rasierklinge, Einrasten und Tastenkürzel.
 - MP4-Export in 720p/1080p mit 30/60 fps.
 - Aufnahme-Pille mit Pause, Checkpoints, Neuansetzen und Live-Text.

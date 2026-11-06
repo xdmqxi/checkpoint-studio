@@ -36,7 +36,7 @@ Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destr
 
 ## Umfang
 
-Ein Schnittplatz im Stil professioneller Videoeditoren mit eigenem dunklem SAP-Workflow-Design. Enthalten sind eine Videospur und dynamische Audiobereiche, keine übereinanderliegenden Videospuren, Videoübergänge, Farbkorrektur, Untertitel- oder KI-Funktionen. Die Aufnahme enthält Bildschirm und optional Mikrofon; Systemton-Aufnahme bleibt in dieser Version deaktiviert. Importierter Videoton wird unterstützt. Eine Windows-x64-Version wird gebaut; eine tatsächliche Windows-Laufzeitprüfung muss auf einem Windows-PC erfolgen.
+Ein Schnittplatz im Stil professioneller Videoeditoren mit eigenem dunklem SAP-Workflow-Design. Enthalten sind eine Videospur und dynamische Audiobereiche, keine übereinanderliegenden Videospuren, Videoübergänge, Farbkorrektur, Untertitel- oder KI-Funktionen. Die Aufnahme enthält Bildschirm und optional Mikrofon; Systemton-Aufnahme bleibt in dieser Version deaktiviert. Importierter Videoton wird unterstützt. Eine Windows-x64-Version wird gebaut. Editor, Audioimporte und Export sind auf einem Windows-Runner geprüft; echte Windows-Bildschirm-/Mikrofonaufnahme bleibt gesondert zu prüfen.
 
 ## Fenster und Programm-Updates
 
