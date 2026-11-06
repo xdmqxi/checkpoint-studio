@@ -49,6 +49,7 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - name: Verify Windows installer upgrade
+        timeout-minutes: 5
         if: matrix.target == 'win'
         shell: pwsh
         run: ./tests/windows-upgrade.ps1

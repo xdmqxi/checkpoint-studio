@@ -10,14 +10,14 @@ public static class UpgradeWizard {
  [DllImport("user32.dll")] public static extern bool EnumChildWindows(IntPtr h, EnumProc cb, IntPtr p);
  [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetWindowText(IntPtr h, StringBuilder b, int max);
  [DllImport("user32.dll")] public static extern IntPtr GetDlgItem(IntPtr h, int id);
- [DllImport("user32.dll")] public static extern IntPtr SendMessage(IntPtr h, uint msg, IntPtr w, IntPtr l);
+ [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h, uint msg, IntPtr w, IntPtr l);
  [DllImport("user32.dll")] public static extern bool IsWindowEnabled(IntPtr h);
  public static string Text(IntPtr root) {
   var text=new StringBuilder();
   EnumChildWindows(root,(h,p)=>{var b=new StringBuilder(2048);GetWindowText(h,b,2048);text.AppendLine(b.ToString());return true;},IntPtr.Zero);
   return text.ToString();
  }
- public static void Click(IntPtr root,int id){var h=GetDlgItem(root,id);if(h==IntPtr.Zero||!IsWindowEnabled(h))throw new Exception("Wizard button unavailable: "+id);SendMessage(h,0xF5,IntPtr.Zero,IntPtr.Zero);}
+ public static void Click(IntPtr root,int id){var h=GetDlgItem(root,id);if(h==IntPtr.Zero||!IsWindowEnabled(h))throw new Exception("Wizard button unavailable: "+id);PostMessage(h,0xF5,IntPtr.Zero,IntPtr.Zero);}
 }
 '@
 $version = (Get-Content package.json | ConvertFrom-Json).version
@@ -33,11 +33,13 @@ $settings = @('checkpoint-studio','Checkpoint Studio') | ForEach-Object { Join-P
 foreach ($file in $settings) { New-Item (Split-Path $file) -ItemType Directory -Force | Out-Null; Set-Content $file 'preserve-settings' }
 $oldInstaller = Join-Path $base 'previous.exe'
 Invoke-WebRequest 'https://github.com/xdmqxi/checkpoint-studio/releases/download/v0.6.0/Checkpoint-Studio-Windows-x64-Setup.exe' -OutFile $oldInstaller
+Write-Output 'Installing previous version 0.6.0 in isolated test directory'
 $old = Start-Process $oldInstaller -ArgumentList "/S /currentuser /D=$oldDir" -PassThru
 if (-not $old.WaitForExit(180000) -or $old.ExitCode -ne 0) { throw 'Previous version installation failed' }
 if (-not (Test-Path (Join-Path $oldDir 'Checkpoint Studio.exe'))) { throw 'Previous application missing' }
 $installer = (Resolve-Path "release/Checkpoint-Studio-$version-Windows-x64-Setup.exe").Path
 # First use the real interactive wizard and verify its detected previous version.
+Write-Output 'Opening upgrade wizard'
 $wizard = Start-Process $installer -ArgumentList "/currentuser /D=$newDir" -PassThru
 $found = $false
 for ($i=0; $i -lt 30; $i++) {
@@ -47,7 +49,7 @@ for ($i=0; $i -lt 30; $i++) {
  if ($wizard.MainWindowHandle -eq [IntPtr]::Zero) { continue }
  $text = [UpgradeWizard]::Text($wizard.MainWindowHandle)
  if ($text -match 'Vorhandene Version: 0\.6\.0' -and $text -match 'Bisherige Programmversion automatisch entfernen') { $found=$true; break }
- if ($i -gt 1 -and $i % 3 -eq 0) { [UpgradeWizard]::Click($wizard.MainWindowHandle,1) }
+ if ($i -gt 1 -and $i % 3 -eq 0) { Write-Output "Advancing wizard: $text"; [UpgradeWizard]::Click($wizard.MainWindowHandle,1) }
 }
 if (-not $found) { throw "Previous-version page not found. Wizard text: $text" }
 Write-Output 'PASS: real NSIS wizard detects and explains replacement of version 0.6.0'
