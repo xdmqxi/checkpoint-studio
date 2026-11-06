@@ -1,6 +1,6 @@
 {
   "name": "checkpoint-studio",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "description": "Local screen recorder with non-destructive retakes",
   "main": "electron/main.cjs",
@@ -19,7 +19,8 @@
     "test:editor": "node tests/editor-checkpoints-smoke.mjs",
     "pack:mac": "npm run build && electron-builder --mac dir --arm64",
     "brand": "node scripts/create-brand.cjs",
-    "test:studio": "node tests/studio-editor-smoke.mjs"
+    "test:studio": "node tests/studio-editor-smoke.mjs",
+    "test:layout": "node tests/studio-layout-smoke.mjs"
   },
   "dependencies": {
     "ffmpeg-static": "^5.3.0",
@@ -95,7 +96,8 @@
       "createStartMenuShortcut": true,
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico"
+      "uninstallerIcon": "build/icon.ico",
+      "include": "build/installer.nsh"
     },
     "dmg": {
       "background": "build/dmg-background.png",

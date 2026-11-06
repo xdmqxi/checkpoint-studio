@@ -177,17 +177,19 @@ try {
   });
   await audioClip.scrollIntoViewIfNeeded();
   let b = await audioClip.boundingBox();
-  await page.mouse.move(b.x + b.width / 2, b.y + 30);
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
   await page.mouse.down();
-  await page.mouse.move(b.x + b.width / 2 + 40, b.y + 94, { steps: 8 });
+  await page.mouse.move(b.x + b.width / 2 + 40, b.y + b.height / 2 + 42, {
+    steps: 8,
+  });
   await page.mouse.up();
   p = await saved();
   assert.equal(p.audioTracks[0].lane, 2);
   assert.ok(p.audioTracks[0].start > 0.2);
   b = await audioClip.boundingBox();
-  await page.mouse.move(b.x + b.width - 3, b.y + 40);
+  await page.mouse.move(b.x + b.width - 3, b.y + b.height / 2);
   await page.mouse.down();
-  await page.mouse.move(b.x + b.width - 45, b.y + 40, { steps: 8 });
+  await page.mouse.move(b.x + b.width - 45, b.y + b.height / 2, { steps: 8 });
   await page.mouse.up();
   p = await saved();
   assert.ok(p.audioTracks[0].out < 2);
@@ -237,14 +239,22 @@ try {
     .getByRole("button", { name: "Auswahlwerkzeug", exact: true })
     .click();
   // Real video reordering and edge trim, with non-destructive undo.
-  const clips=page.locator('.timeline-video-clip');
+  const clips = page.locator(".timeline-video-clip");
   await clips.first().dragTo(clips.nth(1));
-  p=await saved();assert.equal(p.clips[0].id,'c2');assert.equal(p.audioTracks[0].start,.2);
-  await page.getByRole('button',{name:'Rückgängig',exact:true}).click();
-  const firstClip=clips.first();await firstClip.scrollIntoViewIfNeeded();const vb=await firstClip.boundingBox();
-  await page.mouse.move(vb.x+vb.width-3,vb.y+40);await page.mouse.down();await page.mouse.move(vb.x+vb.width-35,vb.y+40,{steps:6});await page.mouse.up();
-  p=await saved();assert.ok(p.clips[0].out<1.4);
-  await page.getByRole('button',{name:'Rückgängig',exact:true}).click();
+  p = await saved();
+  assert.equal(p.clips[0].id, "c2");
+  assert.equal(p.audioTracks[0].start, 0.2);
+  await page.getByRole("button", { name: "Rückgängig", exact: true }).click();
+  const firstClip = clips.first();
+  await firstClip.scrollIntoViewIfNeeded();
+  const vb = await firstClip.boundingBox();
+  await page.mouse.move(vb.x + vb.width - 3, vb.y + 40);
+  await page.mouse.down();
+  await page.mouse.move(vb.x + vb.width - 35, vb.y + 40, { steps: 6 });
+  await page.mouse.up();
+  p = await saved();
+  assert.ok(p.clips[0].out < 1.4);
+  await page.getByRole("button", { name: "Rückgängig", exact: true }).click();
   await page.screenshot({
     path: "test-results/studio-editor.png",
     fullPage: true,

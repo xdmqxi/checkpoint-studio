@@ -262,7 +262,7 @@ export function EditorTimeline({
                   key={m.id}
                   style={{
                     left: Math.min(width - 8, m.time * pps),
-                    top: 8 + (i % 2) * 22,
+                    top: 1 + (i % 2) * 14,
                   }}
                   title={`${m.name} · ${timeLabel(m.time)} – Zur Stelle springen`}
                   aria-label={`Checkpoint ${m.name} bei ${timeLabel(m.time)}`}

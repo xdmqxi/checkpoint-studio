@@ -1,4 +1,4 @@
-# Checkpoint Studio 0.6 – Schnittplatz
+# Checkpoint Studio 0.6.1 – Schnittplatz
 
 Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destruktiv: Clips verweisen auf Ausschnitte aus Originaldateien. Löschen eines Timeline-Clips entfernt keine Originaldatei.
 
@@ -37,3 +37,9 @@ Nach dem Stoppen einer Aufnahme öffnet sich der Editor. Er arbeitet nicht-destr
 ## Umfang
 
 Ein Schnittplatz im Stil professioneller Videoeditoren mit eigenem dunklem SAP-Workflow-Design. Enthalten sind eine Videospur und vier Audiobereiche, keine übereinanderliegenden Videospuren, Videoübergänge, Farbkorrektur, Untertitel- oder KI-Funktionen. Die Aufnahme enthält Bildschirm und optional Mikrofon; Systemton-Aufnahme bleibt in dieser Version deaktiviert. Importierter Videoton wird unterstützt. Eine Windows-x64-Version wird gebaut; eine tatsächliche Windows-Laufzeitprüfung muss auf einem Windows-PC erfolgen.
+
+## Fenster und Programm-Updates
+
+Der Editor teilt die verfügbare Fensterhöhe zwischen Vorschau und Timeline auf; alle Spuren bleiben auf der Arbeitsfläche sichtbar. Bei langen Medienlisten und Eigenschaften bleibt die Navigation im jeweiligen Panel.
+
+Windows: Im Installations-Wizard wird eine erkannte Vorgängerversion angezeigt. Die neue Installation ersetzt die vorherigen Programmdateien; Einstellungen und extern gespeicherte Projektordner bleiben erhalten. Auf dem Mac die App erneut in Programme ziehen und die vorhandene App ersetzen. Bereits heruntergeladene EXE-/DMG-Dateien im Downloads-Ordner werden nicht automatisch gelöscht.

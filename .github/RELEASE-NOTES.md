@@ -2,6 +2,8 @@
 
 Dunkler SAP-Workflow-Schnittplatz für Bildschirmaufnahmen und Schulungsvideos.
 
+Neu in 0.6.1: Die Arbeitsfläche passt sich an die Fensterhöhe an, ohne vertikales Scrollen der gesamten Seite. Der Windows-Wizard zeigt bestehende Installationen und ersetzt die alte Programmversion beim Update. Einstellungen und externe Projektordner bleiben erhalten.
+
 - Video- und Audio-Import mit kompatiblen Arbeitskopien; Originale bleiben erhalten.
 - Video schneiden, kürzen, umordnen, duplizieren und rückgängig machen.
 - Drei zusätzliche Audiospuren mit Wellenformen, Verschieben, Kürzen, Lautstärke, Stummschaltung und Ein-/Ausblenden.

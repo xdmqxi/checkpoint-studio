@@ -1,4 +1,4 @@
-# Checkpoint Studio 0.6.0
+# Checkpoint Studio 0.6.1
 
 Dunkler Bildschirmrecorder und Mehrspur-Schnittplatz für SAP-Schulungsvideos.
 
@@ -26,7 +26,7 @@ macOS Apple Silicon, als DMG mit eigener Installationsansicht bauen:
 npm run dist:mac
 ```
 
-Ergebnis: `release/Checkpoint-Studio-0.6.0-macOS-arm64.dmg` sowie `release/mac-arm64/Checkpoint Studio.app`. DMG öffnen und die App auf den Programme-Ordner ziehen. Nur das App-Verzeichnis ohne DMG erzeugt `npm run pack:mac`. Der lokale Build ist nicht mit einem Apple Developer-ID-Zertifikat signiert oder notarisiert. Intel auf einem passenden Rechner mit `npx electron-builder --mac dir --x64` bauen; nicht hier geprüft.
+Ergebnis: `release/Checkpoint-Studio-0.6.1-macOS-arm64.dmg` sowie `release/mac-arm64/Checkpoint Studio.app`. DMG öffnen und die App auf den Programme-Ordner ziehen. Nur das App-Verzeichnis ohne DMG erzeugt `npm run pack:mac`. Der lokale Build ist nicht mit einem Apple Developer-ID-Zertifikat signiert oder notarisiert. Intel auf einem passenden Rechner mit `npx electron-builder --mac dir --x64` bauen; nicht hier geprüft.
 
 Windows auf einem Windows-Rechner:
 
@@ -35,7 +35,7 @@ npm ci
 npm run dist:win
 ```
 
-Erzeugt `release/Checkpoint-Studio-0.6.0-Windows-x64-Setup.exe`, einen NSIS-Installer mit wählbarem Installationsordner und Deinstallation. Der Windows-x64-Installer wurde lokal cross-kompiliert und zusätzlich nativ auf GitHub Actions gebaut. Programmstart, Editor, Audio-Import/-Vorschau und Videoexport wurden auf dem Windows-Runner geprüft; echte Windows-Bildschirm-/Mikrofonaufnahme und die interaktive Installer-Abnahme bleiben offen. Siehe `WINDOWS-CHECK.md`. Native Windows-ARM64-Pakete sind noch nicht vorgesehen.
+Erzeugt `release/Checkpoint-Studio-0.6.1-Windows-x64-Setup.exe`, einen NSIS-Installer mit wählbarem Installationsordner und Deinstallation. Der Windows-x64-Installer wurde lokal cross-kompiliert und zusätzlich nativ auf GitHub Actions gebaut. Programmstart, Editor, Audio-Import/-Vorschau und Videoexport wurden auf dem Windows-Runner geprüft; echte Windows-Bildschirm-/Mikrofonaufnahme und die interaktive Installer-Abnahme bleiben offen. Siehe `WINDOWS-CHECK.md`. Native Windows-ARM64-Pakete sind noch nicht vorgesehen.
 
 ## Release-Paketierung seit 0.4
 
@@ -154,3 +154,9 @@ Oberfläche an SAP Fiori Horizon angelehnt: dunkle Karten, blaue Aktionen, klare
 ## Schnittplatz 0.6
 
 Dunkler Schnittplatz mit Projektmedien, Programmvorschau, Eigenschaften und gemeinsamer Mehrspur-Timeline. Video und Audio schneiden, an den Kanten kürzen, verschieben, duplizieren, stummschalten; Wellenformen, Audio-Fades, Rasierklinge, Einrasten und Tastenkürzel. Wiedergabe über Clipgrenzen hinweg; normalisierte Audio-/Videoimporte und konfigurierbarer MP4-Export. Die vollständige Bedienung und Grenzen stehen in [BEDIENUNG.md](BEDIENUNG.md). UI-End-to-End-Test: `npm run test:studio`.
+
+## Fensterlayout und Windows-Updates (0.6.1)
+
+Der Schnittplatz passt sich an die Fensterhöhe an. Vorschau, Werkzeuge und alle Spuren bleiben ohne vertikales Scrollen der gesamten Seite sichtbar. Medienlisten und Eigenschaften sind innerhalb ihrer eigenen Bereiche begrenzt.
+
+Der Windows-Wizard erkennt eine vorhandene Installation und zeigt die bisherige Version an. Beim Update entfernt der NSIS-Upgradepfad die alten Programmdateien, bevor die neue Version installiert wird. App-ID und Installer-Identität bleiben stabil, Einstellungen werden behalten; externe Projektordner sind nicht Teil der Deinstallation. Auf macOS die vorhandene App im Programme-Ordner ersetzen.
