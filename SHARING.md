@@ -10,8 +10,8 @@ Der dauerhafte Link ist nach dem ersten Upload:
 
 Unter diesem Link wird immer die neueste veröffentlichte Version angezeigt. Die Download-Dateien haben feste Namen:
 
-- `.../releases/latest/download/Checkpoint-Studio-Windows-x64-Setup.exe`
-- `.../releases/latest/download/Checkpoint-Studio-macOS-arm64.dmg`
+- `https://github.com/xdmqxi/checkpoint-studio/releases/latest/download/Checkpoint-Studio-Windows-x64-Setup.exe`
+- `https://github.com/xdmqxi/checkpoint-studio/releases/latest/download/Checkpoint-Studio-macOS-arm64.dmg`
 
 Deine Freunde schließen die App, laden den aktuellen Installer und installieren ihn über die bisherige Version. Ihre Projektordner liegen separat und bleiben erhalten. Die aktuelle Anwendung lädt und installiert Updates noch nicht selbständig.
 
@@ -21,7 +21,7 @@ Deine Freunde schließen die App, laden den aktuellen Installer und installieren
 2. Versionsnummer in `package.json`, `package-lock.json` und der angezeigten Versionszeile aktualisieren.
 3. Änderungen committen und auf `main` pushen.
 4. Passenden Tag erstellen und pushen, beispielsweise `git tag v0.6.1` und `git push origin v0.6.1`.
-5. `.github/workflows/release.yml` prüft die Version, baut auf Mac/Windows und veröffentlicht die Installer erst, wenn beide Build-Jobs erfolgreich waren. Die erstmalige Ausführung auf GitHub ist noch zu bestätigen; lokale Tests ersetzen kein grünes GitHub-Actions-Ergebnis.
+5. `.github/workflows/release.yml` prüft die Version, baut auf Mac/Windows und veröffentlicht die Installer erst, wenn beide Build-Jobs erfolgreich waren. Der erste vollständige Release-Lauf für v0.6.0 ist [erfolgreich](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42205759605): native Mac-/Windows-Tests, beide Installer und Veröffentlichung.
 
 Für den ersten Upload bereits lokal getesteter Installer bereitet `node scripts/prepare-release.cjs` die stabilen Dateinamen und Prüfsummen in `release-upload/` vor. Anschließend können diese Dateien zu einer GitHub-Release hochgeladen werden.
 

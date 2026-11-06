@@ -8,9 +8,15 @@
 - PE-Headerprüfung für App und FFmpeg. Der Prüfhelfer kann den tatsächlichen NSIS-Nutzinhalt extrahieren und dessen FFmpeg-Hash gegen das Build-Manifest prüfen.
 - Nicht-destruktive Timeline, Live-Retakes, Projektformat und echter Video-/Audioexport automatisiert auf macOS geprüft. Exporttest verwendet einen Projektpfad mit Leerzeichen, Umlaut und Apostroph.
 
+## Native Windows-Tests auf GitHub Actions
+
+Am 6. November 2026 erfolgreich: Programmstart, Seiten-/Theme-Test, 26 Tests einschließlich echter FFmpeg-Importe/Exports, Checkpoint-/Editor-Smoke und Studio-E2E mit AIFF-Import, Wellenform, Mehrspur-Drag/Trim, synchroner Audiowiedergabe beim Videoquellwechsel, Stummschaltung, Rasierklinge, Undo und 720p-MP4-Export. Der NSIS-Installer wurde auf Windows gebaut.
+
+Belege: [Windows-CI](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42205756210) und [Mac-/Windows-Release-Build](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42205759605).
+
 ## Noch nicht auf Windows geprüft
 
-Installation, Programmstart, echte Bildschirm-/Fensteraufnahme, Mikrofon, On-top-Verhalten, Audio-/Videosynchronität und Videoexport wurden in dieser Sitzung nicht auf einem Windows-System ausgeführt. Ein gebauter Installer ist dafür kein Nachweis. Auf diesem Rechner stehen weder Windows noch eine Windows-VM zur Verfügung.
+Interaktive Installation/Deinstallation auf einem normalen Benutzer-PC, echte Bildschirm-/Fensteraufnahme, Mikrofon, die Aufnahme-Pille über anderen Windows-Programmen sowie Langzeit-Synchronität bei echter Aufnahme sind weiterhin offen. Die erfolgreichen CI-Editor-/Exporttests ersetzen diese Aufnahmeabnahme nicht.
 
 Ziel ist Windows 10/11 x64. Ein natives Windows-ARM64-Paket wird bewusst nicht angeboten, weil der gewählte FFmpeg-Build hierfür nicht vorbereitet ist. Betrieb im x64-Emulationsmodus von Windows ARM ist nicht validiert.
 
@@ -39,6 +45,6 @@ npm run test:ui
 npm run dist:win
 ```
 
-`.github/workflows/windows.yml` bereitet diesen Ablauf für GitHub Actions vor. Die Workflow-Datei wurde lokal angelegt; es wurde hier kein GitHub-Lauf gestartet. Die funktionale Aufnahmeabnahme oben bleibt zusätzlich erforderlich.
+`.github/workflows/windows.yml` bereitet diesen Ablauf für GitHub Actions vor. Der Workflow wurde auf GitHub erfolgreich ausgeführt. Die funktionale Aufnahmeabnahme oben bleibt zusätzlich erforderlich.
 
-Für 0.6 zusätzlich auf Windows prüfen: `npm run test:studio` (normalisierter AIFF-Import, Mehrspur-Audio, Wellenform, Clipkanten/Drag, Quellwechsel und MP4-Export). Diese CI-Aufgabe ist vorbereitet, wurde hier aber nicht auf einem Windows-PC ausgeführt.
+Für 0.6 zusätzlich auf Windows prüfen: `npm run test:studio` (normalisierter AIFF-Import, Mehrspur-Audio, Wellenform, Clipkanten/Drag, Quellwechsel und MP4-Export). Diese CI-Aufgabe wurde auf einem nativen Windows-Runner erfolgreich ausgeführt.

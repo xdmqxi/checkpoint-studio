@@ -35,7 +35,7 @@ npm ci
 npm run dist:win
 ```
 
-Erzeugt `release/Checkpoint-Studio-0.6.0-Windows-x64-Setup.exe`, einen NSIS-Installer mit wählbarem Installationsordner und Deinstallation. Der Windows-x64-Installer wurde auf dem Mac erfolgreich cross-kompiliert; Windows-Start/Aufnahme sind noch nicht auf einem Windows-Rechner geprüft. Siehe `WINDOWS-CHECK.md`. Native Windows-ARM64-Pakete sind noch nicht vorgesehen.
+Erzeugt `release/Checkpoint-Studio-0.6.0-Windows-x64-Setup.exe`, einen NSIS-Installer mit wählbarem Installationsordner und Deinstallation. Der Windows-x64-Installer wurde lokal cross-kompiliert und zusätzlich nativ auf GitHub Actions gebaut. Programmstart, Editor, Audio-Import/-Vorschau und Videoexport wurden auf dem Windows-Runner geprüft; echte Windows-Bildschirm-/Mikrofonaufnahme und die interaktive Installer-Abnahme bleiben offen. Siehe `WINDOWS-CHECK.md`. Native Windows-ARM64-Pakete sind noch nicht vorgesehen.
 
 ## Release-Paketierung seit 0.4
 

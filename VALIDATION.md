@@ -2,6 +2,8 @@
 
 ## Version 0.6.0 – Schnittarbeitsplatz (6. November 2026)
 
+GitHub-Veröffentlichung abgeschlossen: [Release v0.6.0](https://github.com/xdmqxi/checkpoint-studio/releases/tag/v0.6.0). [Release-Workflow](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42205759605) mit Mac-/Windows-Builds und Veröffentlichung sowie [Windows-CI](https://github.com/xdmqxi/checkpoint-studio/actions/runs/42205756210) erfolgreich. Native Windows-Editor-/Audio-/Exporttests sind damit ausgeführt; echte Windows-Bildschirmaufnahme bleibt gesondert offen. Anonyme Downloads beider stabiler Installer-Links geprüft; die veröffentlichten SHA-256-Dateien stimmen mit den Asset-Digests aus GitHub überein.
+
 - Dunkler Schnittplatz mit Projektmedien/Suche, Programmmonitor, Eigenschaften und gemeinsamer V1/A1–A4-Timeline. Zusätzliche drei Audio-Lanes; echte Wellenformen aus decodierten Samples; Audio-Quellausschnitt, Lautstärke, Mute, Fades, Position und Lane sind gespeichert und rückgängig machbar.
 - Auswahl-/Rasierklingenwerkzeug, Video-/Audio-Clipkanten, Video-Umordnen, Duplizieren/Löschen, Audio-Drag zwischen Lanes mit Einrasten/Alt-Override und Tastenkürzel. Original-Audio bleibt nach Entfernen in der Projektbibliothek. Legacy-Projekte werden ohne Versionsbruch geöffnet.
 - Durchgehende Programmvorschau über Schnitte und Takes hinweg; Aufnahmeton und importierte Audios laufen zur Sequenzzeit. HTML-Mediaelemente der importierten Spuren werden im E2E-Test tatsächlich auf Wiedergabe, Quellzeit und Lautstärke kontrolliert.
@@ -9,7 +11,7 @@
 - Build erfolgreich; 26 Tests bestanden, inklusive echten FFmpeg-Exports: Fades in decodierten Audiosamples, normalisierter AIFF-/MKV-Import, Ton aus importierten Videos und 720p60.
 - UI-Smoke für Seiten/Theme und bestehender Checkpoint-/Editor-Smoke erfolgreich. Neuer Studio-E2E-Test gegen Quell-App und gepackte Mac-App bestanden: AIFF, Projektkopie, Wellenform, Position/Fades, echte Audiowiedergabe beim Video-Quellwechsel, Mute, Split/Undo, Audio-Lane-Drag/Trim, Video-Umordnen/Trim, Bibliotheks-Wiederverwendung, Rasierklinge, Tastatur-Undo und UI-ausgelöster 720p-Export. Screenshots visuell geprüft.
 - Live-Aufnahme-Test gegen Quell-App und gepackte Mac-App bestanden: Aufnahme, minimiertes Hauptfenster, On-top-Pille (543 px nativ, 11 px leerer rechter Rand), Pause/Fortsetzen, Checkpoint/Retake, Text/Escape, gebrannte Textpixel und echter MP4-Export.
-- Einschränkungen: eine Videospur, keine Video-Compositing-/Übergangs-/Farbkorrektur- oder KI-Funktionen. Systemton-Aufnahme weiterhin deaktiviert. Windows-Laufzeit muss auf Windows geprüft werden.
+- Einschränkungen: eine Videospur, keine Video-Compositing-/Übergangs-/Farbkorrektur- oder KI-Funktionen. Systemton-Aufnahme weiterhin deaktiviert. Echte Windows-Aufnahme und Installer-Abnahme bleiben offen; die native Editor-/Export-Laufzeitprüfung auf Windows ist inzwischen erfolgreich (siehe nachfolgenden GitHub-Nachweis).
 
 
 ## Version 0.5.0 – SAP-Workflow-Design (6. November 2026)
