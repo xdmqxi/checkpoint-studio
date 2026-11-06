@@ -14,13 +14,15 @@ public static class UpgradeWizard {
  [DllImport("user32.dll")] public static extern bool IsWindowEnabled(IntPtr h);
  [DllImport("user32.dll")] public static extern bool EnumWindows(EnumProc cb,IntPtr p);
  [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
+ [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
+ public static IntPtr InstallerWindow(){IntPtr root=IntPtr.Zero;EnumWindows((h,p)=>{var b=new StringBuilder(512);GetWindowText(h,b,512);if(IsWindowVisible(h)&&b.ToString().StartsWith("Checkpoint Studio Setup")){root=h;return false;}return true;},IntPtr.Zero);return root;}
  public static string VisibleWindows(){var s=new StringBuilder();EnumWindows((h,p)=>{if(IsWindowVisible(h)){var b=new StringBuilder(512);GetWindowText(h,b,512);s.AppendLine("WINDOW: "+b.ToString());s.AppendLine(Text(h));}return true;},IntPtr.Zero);return s.ToString();}
  public static string Text(IntPtr root) {
   var text=new StringBuilder();
   EnumChildWindows(root,(h,p)=>{var b=new StringBuilder(2048);GetWindowText(h,b,2048);text.AppendLine(b.ToString());return true;},IntPtr.Zero);
   return text.ToString();
  }
- public static void Click(IntPtr root,int id){var h=GetDlgItem(root,id);if(h==IntPtr.Zero||!IsWindowEnabled(h))throw new Exception("Wizard button unavailable: "+id);PostMessage(h,0xF5,IntPtr.Zero,IntPtr.Zero);}
+ public static void Click(IntPtr root,int id){var h=GetDlgItem(root,id);if(h==IntPtr.Zero||!IsWindowEnabled(h))throw new Exception("Wizard button unavailable: "+id);SetForegroundWindow(root);PostMessage(root,0x111,new IntPtr(id),h);}
 }
 '@
 $version = (Get-Content package.json | ConvertFrom-Json).version
@@ -49,10 +51,10 @@ for ($i=0; $i -lt 30; $i++) {
  Start-Sleep -Milliseconds 500
  $wizard.Refresh()
  if ($wizard.HasExited) { throw 'Wizard closed before upgrade page' }
- if ($wizard.MainWindowHandle -eq [IntPtr]::Zero) { continue }
- $text = [UpgradeWizard]::Text($wizard.MainWindowHandle)
+ if (([UpgradeWizard]::InstallerWindow()) -eq [IntPtr]::Zero) { continue }
+ $text = [UpgradeWizard]::Text(([UpgradeWizard]::InstallerWindow()))
  if ($text -match 'Vorhandene Version: 0\.6\.0' -and $text -match 'Bisherige Programmversion automatisch entfernen') { $found=$true; break }
- if ($i -gt 1 -and $i % 3 -eq 0) { Write-Output "Advancing wizard: $text"; [UpgradeWizard]::Click($wizard.MainWindowHandle,1) }
+ if ($i -gt 1 -and $i % 3 -eq 0) { Write-Output "Advancing wizard: $text"; [UpgradeWizard]::Click(([UpgradeWizard]::InstallerWindow()),1) }
 }
 if (-not $found) { throw "Previous-version page not found. Wizard text: $text" }
 Write-Output 'PASS: real NSIS wizard detects and explains replacement of version 0.6.0'
@@ -60,8 +62,8 @@ Write-Output 'PASS: real NSIS wizard detects and explains replacement of version
 for ($i=0; $i -lt 120; $i++) {
  $wizard.Refresh();if($wizard.HasExited){break}
  if($i % 10 -eq 0){Write-Output "Upgrade progress: $([UpgradeWizard]::VisibleWindows())"}
- $next=[UpgradeWizard]::GetDlgItem($wizard.MainWindowHandle,1)
- if($next -ne [IntPtr]::Zero -and [UpgradeWizard]::IsWindowEnabled($next)){[UpgradeWizard]::Click($wizard.MainWindowHandle,1)}
+ $next=[UpgradeWizard]::GetDlgItem(([UpgradeWizard]::InstallerWindow()),1)
+ if($next -ne [IntPtr]::Zero -and [UpgradeWizard]::IsWindowEnabled($next)){[UpgradeWizard]::Click(([UpgradeWizard]::InstallerWindow()),1)}
  Start-Sleep -Milliseconds 1000
 }
 $wizard.Refresh();if(-not $wizard.HasExited){throw "Upgrade wizard did not finish. $([UpgradeWizard]::VisibleWindows())"}
